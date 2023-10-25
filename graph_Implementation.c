@@ -6,9 +6,9 @@
 #include "graph.h"
 
 
-void setcoords(point *p, double coords[], int dimention) {
+void setcoords(point *p, float* coords, int dimention) {
     p->dim = dimention;
-    p->coord = (double*)malloc(dimention * sizeof(double));
+    p->coord = (float*)malloc(dimention * sizeof(float));
 
     for(int i = 0; i < dimention; i++) {
         p->coord[i] = coords[i];
@@ -43,49 +43,54 @@ Graph* createGraph(int numnodes) {
     return graph;
 }
 
-Node** getnodes(FILE* file, int numnodes, int dim) {
-    char* line = NULL;
-    size_t len = 0;
-    Node** nodes = (Node**)malloc(numnodes * sizeof(Node*));
+
+Node** getnodes(char* filename, int* numnodes, int dim) {
+    FILE *file = fopen(filename, "rb");  // Open the file in binary mode
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file: %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    // Read the number of points from the file
+    int num_points;
+    if (fread(&num_points, sizeof(int), 1, file) != 1) {
+        fprintf(stderr, "Error reading the number of points from file\n");
+        exit(EXIT_FAILURE);
+    }
+
+    point* points =(point*) malloc(num_points * sizeof(point));
+    if (points == NULL) {
+        fprintf(stderr, "Memory allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < num_points; ++i) {
+        float* values = malloc(dim * sizeof(float));
+        if (values == NULL) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Read the floats for the current point from the file
+        if (fread(values, sizeof(float), dim, file) != dim) {
+            fprintf(stderr, "Error reading data from file\n");
+            exit(EXIT_FAILURE);
+        }
+
+        setcoords(&points[i],values,dim);
+    }
+
+    Node** nodes = (Node**)malloc(num_points * sizeof(Node*));
     if (nodes == NULL) {
         fprintf(stderr, "Memory allocation error\n");
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < numnodes; i++) {
-        if (getline(&line, &len, file) == -1) {
-            fprintf(stderr, "Error reading line from file\n");
-            exit(EXIT_FAILURE);
-        }
-
-        double* coords = (double*) malloc (dim * sizeof(double));
-        if (coords == NULL) {
-            fprintf(stderr, "Memory allocation error\n");
-            exit(EXIT_FAILURE);
-        }
-        char* token = strtok(line, " ");
-        for (int j = 0; j < dim && token != NULL; j++) {
-            sscanf(token, "%le", &coords[j]);
-            token = strtok(NULL, " ");
-        }
-
-        if (token != NULL) {
-            fprintf(stderr, "Too many coordinates in line\n");
-            exit(EXIT_FAILURE);
-        }
-
-        point* p = (point*)malloc(sizeof(point));
-        if (p == NULL) {
-            fprintf(stderr, "Memory allocation error\n");
-            exit(EXIT_FAILURE);
-        }
-        setcoords(p, coords, dim);
-        nodes[i] = create_node(i, p);
-
-        free(coords);
+    for (int i = 0; i < num_points; i++) {
+        nodes[i] = create_node(i, &points[i]);
     }
 
-    free(line);  
+    *numnodes = num_points;
     return nodes;
 }
 
@@ -140,7 +145,6 @@ void addEdge(Graph* graph, Node* src, Node* dest) {
 void printNeighbors(Graph* graph) {
     for (int i = 0; i < graph->numnodes; ++i) {
         Node* currentNode = graph->nodes[i];
-        printf("Node %d coords: %f , %f \n",currentNode->numnode,currentNode->data->coord[0],currentNode->data->coord[1]);
         printf("Node %d kneighbors: ", currentNode->numnode);
         ListNode* kneighborNode = currentNode->kneighbors;
         while (kneighborNode != NULL) {

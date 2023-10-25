@@ -1,5 +1,5 @@
 typedef struct {
-    double *coord;
+    float *coord;
     int dim;
 } point;
 
