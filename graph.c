@@ -39,18 +39,10 @@ int main(int argc, char *argv[]) {
     Graph* graph = createGraph(numnodes);
     
 
-    /*addEdge(graph, nodes[0], nodes[1]);
-    addEdge(graph, nodes[0], nodes[2]);
-    addEdge(graph, nodes[1], nodes[3]);
-    addEdge(graph, nodes[2], nodes[5]);
-    addEdge(graph, nodes[3], nodes[5]);
-    addEdge(graph, nodes[3], nodes[1]);
-    addEdge(graph, nodes[4], nodes[2]);
-    addEdge(graph, nodes[4], nodes[0]);
-    addEdge(graph, nodes[5], nodes[1]);
+    createRandomGraph (graph,nodes,k);
 
 
-    printNeighbors(graph);*/
+    printNeighbors(graph);
 
     free(nodes);
     free(graph->nodes);

@@ -94,13 +94,43 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     return nodes;
 }
 
+void createRandomGraph(Graph* graph, Node** nodes, int k) {
+    srand(time(NULL));
+    int numnodes = graph->numnodes;
+    int exit;
+    for (int i = 0; i < numnodes; ++i) {
+        int count = 0;
+        while (count<k) {
+            int randomNeighbor = rand() % numnodes;                     // Random neighbor node index
+            if (randomNeighbor != i) {
+                exit = addEdge(graph, nodes[i], nodes[randomNeighbor]);
+                if (exit==0){                                           // Check if a new edge was created    
+                    count++;
+                }
+            }
+        }
+    }
+}
 
-void addEdge(Graph* graph, Node* src, Node* dest) {
+int addEdge(Graph* graph, Node* src, Node* dest) {
     
     ListNode* destNode = (ListNode*)malloc(sizeof(ListNode));           // Create a new list node for destination node
     destNode->node = dest;
     destNode->nextnode = NULL;
 
+    if (src->kneighbors != NULL){                                      // Check if there is already an edge from source to destination
+        ListNode* current = src->kneighbors;
+        if (current->node->numnode == destNode->node->numnode) {
+            return 1;
+        }
+        while (current->nextnode != NULL) {
+            if (current->node->numnode == destNode->node->numnode) {
+                return 1;
+            }
+            current = current->nextnode;
+        }
+
+    }
     
     if (src->kneighbors == NULL) {                                      // Add destination node to the kneighbors list of source node
         src->kneighbors = destNode;
@@ -139,6 +169,8 @@ void addEdge(Graph* graph, Node* src, Node* dest) {
     if (graph->nodes[destIndex] == NULL) {
         graph->nodes[destIndex] = dest;
     }
+
+    return 0;
 }
 
 
