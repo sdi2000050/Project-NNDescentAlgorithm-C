@@ -5,6 +5,11 @@
 #include <math.h>
 #include "graph.h"
 
+point* create_point(int d) {
+    point *p = (point*) malloc(sizeof(point));
+    p->dim = d;
+    return p;
+}
 
 void setcoords(point *p, float* coords, int dimention) {
     p->dim = dimention;

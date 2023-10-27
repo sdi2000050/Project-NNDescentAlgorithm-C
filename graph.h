@@ -1,5 +1,6 @@
 #include "graphtypes.h"
 
+point* create_point(int d);
 void setcoords(point *p, float* coords, int dimention);
 void printpoint(point point);
 
