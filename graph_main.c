@@ -27,22 +27,25 @@ int main(int argc, char *argv[]) {
     }
 
     Node** nodes = getnodes(input_file,&numnodes,dim);
-    /*// Print the coordinates and their dimentions
-    for (int i = 0; i < numnodes; ++i) {
-        printf("Point %u (Dimension %u): ", i, nodes[i]->data->dim);
-        for (int j = 0; j < nodes[i]->data->dim; ++j) {
-            printf("%.8f ", nodes[i]->data->coord[j]);
-        }
-        printf("\n");
-    }*/
 
     Graph* graph = createGraph(numnodes);
     
 
     createRandomGraph (graph,nodes,k);
 
-
     printNeighbors(graph);
+
+    ListNode* list = (ListNode*) malloc(sizeof(ListNode));
+    list = connectlist(graph->nodes[0]->kneighbors,graph->nodes[0]->rneighbors);
+    printf("okey\n");
+    ListNode* curr = list;
+    while (curr!=NULL)
+    {
+        printf("%d ",curr->node->numnode);
+        curr = curr->nextnode;
+    }
+    printf("\n");
+
 
     free(nodes);
     free(graph->nodes);

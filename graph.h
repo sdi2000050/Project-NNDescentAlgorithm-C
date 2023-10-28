@@ -10,3 +10,5 @@ Graph* createGraph(int numnodes);
 void createRandomGraph(Graph* graph, Node** nodes, int k);
 int addEdge(Graph* graph, Node* src, Node* dest);
 void printNeighbors(Graph* graph);
+int exist(int numnode, ListNode* list);
+ListNode* connectlist(ListNode* a, ListNode* b);
