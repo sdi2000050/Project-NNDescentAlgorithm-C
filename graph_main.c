@@ -35,17 +35,6 @@ int main(int argc, char *argv[]) {
 
     printNeighbors(graph);
 
-    ListNode* list = (ListNode*) malloc(sizeof(ListNode));
-    list = connectlist(graph->nodes[0]->kneighbors,graph->nodes[0]->rneighbors);
-    printf("okey\n");
-    ListNode* curr = list;
-    while (curr!=NULL)
-    {
-        printf("%d ",curr->node->numnode);
-        curr = curr->nextnode;
-    }
-    printf("\n");
-
 
     free(nodes);
     free(graph->nodes);
