@@ -15,7 +15,7 @@ typedef struct Node {
 typedef struct ListNode {
     Node* node;
     ListNode* nextnode;
-}ListNode;
+} ListNode;
 
 typedef struct Graph {
     int numnodes;
