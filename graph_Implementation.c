@@ -5,11 +5,6 @@
 #include <math.h>
 #include "graph.h"
 
-point* create_point(int d) {
-    point *p = (point*) malloc(sizeof(point));
-    p->dim = d;
-    return p;
-}
 
 void setcoords(point *p, float* coords, int dimention) {
     p->dim = dimention;
@@ -198,5 +193,52 @@ void printNeighbors(Graph* graph) {
         }
         printf("\n");
     }
+}
+
+
+
+int exist(int numnode, ListNode* list){
+    ListNode* current = list;
+    while(current!=NULL){
+        if (current->node->numnode == numnode){
+            return 1;
+        }
+        current = current->nextnode;
+    }
+    return 0;
+}
+
+ListNode* connectlist(ListNode* a, ListNode* b){
+    ListNode* c = (ListNode*) malloc (sizeof(ListNode));
+    ListNode* currc = (ListNode*) malloc (sizeof(ListNode)); 
+    currc = c;
+
+    while ( a != NULL){
+        if(exist(a->node->numnode,c) == 0){
+            currc->nextnode = (ListNode*) malloc (sizeof(ListNode));
+            currc = currc->nextnode;
+            currc->node = create_node(a->node->numnode,a->node->data);            currc->nextnode = NULL;
+            a = a->nextnode;
+        }else{
+            a = a->nextnode;
+        }
+    }
+
+    while ( b != NULL){
+        if (exist(b->node->numnode,c) == 0){
+            currc->nextnode = (ListNode*) malloc (sizeof(ListNode));
+            currc = currc->nextnode;
+            currc->node = create_node(b->node->numnode,b->node->data);
+            currc->nextnode = NULL;
+            b = b->nextnode;
+        }else{
+            b=b->nextnode;
+        }
+
+    }
+
+    c = c->nextnode;
+
+    return c;
 }
 
