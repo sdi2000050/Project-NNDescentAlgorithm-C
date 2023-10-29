@@ -27,8 +27,7 @@ Node* create_node(int n, point* p) {
     node->numnode = n;
     node->data = p;
     node->kneighbors = NULL;
-    node->rneighbors = NULL; 
-    
+    node->rneighbors = NULL;
     return node;
 }
 
@@ -101,11 +100,11 @@ void createRandomGraph(Graph* graph, Node** nodes, int k) {
     int exit;
     for (int i = 0; i < numnodes; ++i) {
         int count = 0;
-        while (count<k) {
+        while (count < k) {
             int randomNeighbor = rand() % numnodes;                     // Random neighbor node index
             if (randomNeighbor != i) {
                 exit = addEdge(graph, nodes[i], nodes[randomNeighbor]);
-                if (exit==0){                                           // Check if a new edge was created    
+                if (exit == 0){                                           // Check if a new edge was created    
                     count++;
                 }
             }
@@ -120,17 +119,19 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
     destNode->nextnode = NULL;
 
     if (src->kneighbors != NULL){                                      // Check if there is already an edge from source to destination
-        ListNode* current = src->kneighbors;
-        if (current->node->numnode == destNode->node->numnode) {
+        ListNode* curr = src->kneighbors;
+        if (curr->node->numnode == dest->numnode) {
             return 1;
         }
-        while (current->nextnode != NULL) {
-            if (current->node->numnode == destNode->node->numnode) {
+        while (curr->nextnode != NULL) {
+            if (curr->node->numnode == dest->numnode) {
                 return 1;
             }
-            current = current->nextnode;
+            curr = curr->nextnode;
         }
-
+        if (curr->node->numnode == dest->numnode) {
+            return 1;
+        }
     }
     
     if (src->kneighbors == NULL) {                                      // Add destination node to the kneighbors list of source node
@@ -196,11 +197,22 @@ void printNeighbors(Graph* graph) {
     }
 }
 
-
+int list_size(ListNode* list) {
+    ListNode* current = (ListNode*) malloc(sizeof(ListNode));
+    current = list;
+    int size = 0;
+    while(list != NULL) {
+        size++;
+        list = list->nextnode;
+    }
+    list = current;
+    return size; 
+}
 
 int exist(int numnode, ListNode* list){
-    ListNode* current = list;
-    while(current != NULL){
+    ListNode* current = (ListNode*) malloc(sizeof(ListNode));
+    current = list;
+    while(current!=NULL){
         if (current->node->numnode == numnode){
             return 1;
         }
@@ -210,38 +222,44 @@ int exist(int numnode, ListNode* list){
 }
 
 ListNode* connectlist(ListNode* a, ListNode* b){
-    ListNode* c = (ListNode*) malloc (sizeof(ListNode));
-    ListNode* currc = (ListNode*) malloc (sizeof(ListNode)); 
-    currc = c;
+    ListNode* c = NULL;
+    ListNode* currc = NULL;
 
     while ( a != NULL){
         if(exist(a->node->numnode,c) == 0){
-            printf("BOOM \n");
-            currc->nextnode = (ListNode*) malloc (sizeof(ListNode));
-            currc = currc->nextnode;
-            currc->node = create_node(a->node->numnode,a->node->data);            
-            currc->nextnode = NULL;
-            a = a->nextnode;
-        }else{
-            a = a->nextnode;
-        }
+            ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
+            newnode->node = create_node(a->node->numnode,a->node->data);
+            newnode->nextnode = NULL;    
+
+            if( c == NULL){
+                c = newnode;
+                currc = newnode;
+            }else{
+                currc->nextnode = newnode;
+                currc = newnode;
+            }
+
+        }    
+        a = a->nextnode;
     }
 
     while ( b != NULL){
-        if (exist(b->node->numnode,c) == 0){
-            currc->nextnode = (ListNode*) malloc (sizeof(ListNode));
-            currc = currc->nextnode;
-            currc->node = create_node(b->node->numnode,b->node->data);
-            currc->nextnode = NULL;
-            b = b->nextnode;
-        }else{
-            b=b->nextnode;
-        }
+        if(exist(b->node->numnode,c) == 0){
+            ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
+            newnode->node = create_node(b->node->numnode,b->node->data);
+            newnode->nextnode = NULL;    
 
+            if( c == NULL){
+                c = newnode;
+                currc = newnode;
+            }else{
+                currc->nextnode = newnode;
+                currc = newnode;
+            }
+
+        }    
+        b = b->nextnode;
     }
-
-    c = c->nextnode;
 
     return c;
 }
-
