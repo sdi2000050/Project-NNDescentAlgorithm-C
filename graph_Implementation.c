@@ -199,7 +199,7 @@ void printNeighbors(Graph* graph) {
 
 int exist(int numnode, ListNode* list){
     ListNode* current = list;
-    while(current!=NULL){
+    while(current != NULL){
         if (current->node->numnode == numnode){
             return 1;
         }
@@ -215,9 +215,11 @@ ListNode* connectlist(ListNode* a, ListNode* b){
 
     while ( a != NULL){
         if(exist(a->node->numnode,c) == 0){
+            printf("BOOM \n");
             currc->nextnode = (ListNode*) malloc (sizeof(ListNode));
             currc = currc->nextnode;
-            currc->node = create_node(a->node->numnode,a->node->data);            currc->nextnode = NULL;
+            currc->node = create_node(a->node->numnode,a->node->data);            
+            currc->nextnode = NULL;
             a = a->nextnode;
         }else{
             a = a->nextnode;
