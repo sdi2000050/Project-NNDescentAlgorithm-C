@@ -27,7 +27,8 @@ Node* create_node(int n, point* p) {
     node->numnode = n;
     node->data = p;
     node->kneighbors = NULL;
-    node->rneighbors = NULL;
+    node->rneighbors = NULL; 
+    
     return node;
 }
 
