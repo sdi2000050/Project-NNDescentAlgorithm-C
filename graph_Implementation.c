@@ -197,17 +197,6 @@ void printNeighbors(Graph* graph) {
     }
 }
 
-int list_size(ListNode* list) {
-    ListNode* current = (ListNode*) malloc(sizeof(ListNode));
-    current = list;
-    int size = 0;
-    while(list != NULL) {
-        size++;
-        list = list->nextnode;
-    }
-    list = current;
-    return size; 
-}
 
 int exist(int numnode, ListNode* list){
     ListNode* current = (ListNode*) malloc(sizeof(ListNode));

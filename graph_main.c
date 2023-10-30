@@ -35,7 +35,6 @@ int main(int argc, char *argv[]) {
 
     printNeighbors(graph);
 
-
     free(nodes);
     free(graph->nodes);
     free(graph);
