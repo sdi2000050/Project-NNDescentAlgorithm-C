@@ -4,6 +4,11 @@
 #include <math.h>
 #include "graph.h"
 
+typedef struct kdistances{
+    Node* node;
+    float dis;
+}KDistance;
+
 void nndescent(Graph* graph, int k){
     int update = 1;
     int numnodes = graph->numnodes;
@@ -13,13 +18,69 @@ void nndescent(Graph* graph, int k){
             Node* currentnode = graph->nodes[i];
             ListNode* neighbors = connectlist(currentnode->kneighbors,currentnode->rneighbors);
             ListNode* currentneighbor = neighbors;
+            KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));
             while(currentneighbor != NULL){
-
-
+                checkneighbors(currentnode,currentneighbor->node->kneighbors,kd,k);
+                checkneighbors(currentnode,currentneighbor->node->rneighbors,kd,k);
+                count=0;
+                for(int l=0; l<k; l++){
+                    if (exist(kd[l]->node->numnode,currentnode->kneighbors) == 1){
+                        count++;
+                    }
+                }
+                if (count!=k){
+                    currentnode->kneighbors = NULL;
+                    for(int j=0; j<k; j++){
+                        addEdge(graph,currentnode,kd[i]->node);
+                    }
+                    updaterneighbors(graph,currentnode->numnode);
+                    update = 1;
+                }
                 currentneighbor = currentneighbor->nextnode;
             }
         }
 
+    }
+}
+
+void updateneighbors(Graph* graph, int node){
+    for (int i=0; i<graph->numnodes; )
+}
+
+float euclidean_distance(point x, point y) {
+    float s = 0.0;
+    for(int i = 0; i < x.dim; i++) {
+        float a = x.coord[i] - y.coord[i];
+        s = s + pow(a, 2);
+    }
+    return sqrt(s);
+}
+
+int sort(const void* a, const void* b) {
+    float disA = ((KDistance*)a)->dis;
+    float disB = ((KDistance*)b)->dis;
+    if (disA < disB) return -1;
+    if (disA > disB) return 1;
+    return 0;
+}
+
+void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k){
+    ListNode* curr = neighbors;
+    count = 0;
+    while(curr!=NULL){
+        float dis = euclidean_distance(&(curr->node->data),&(node->data));
+        if( count < k ){
+            kd[count]->node = curr->node;
+            qsort(kd, k, sizeof(KDistance), comparedis);
+            count++;
+        }
+        else{
+            if( kd[k-1]->dis > dis){
+                kd[k-1]->node = curr->node;
+                qsort(kd, k, sizeof(KDistance), comparedis);
+            }
+        }
+        curr=curr->nextnode;
     }
 }
 
