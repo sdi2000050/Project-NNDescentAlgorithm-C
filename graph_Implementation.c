@@ -179,7 +179,6 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
 void printNeighbors(Graph* graph) {
     for (int i = 0; i < graph->numnodes; ++i) {
         Node* currentNode = graph->nodes[i];
-        printf("Node %d coords: %f %f \n",currentNode->numnode,currentNode->data->coord[0],currentNode->data->coord[1]);
         printf("Node %d kneighbors: ", currentNode->numnode);
         ListNode* kneighborNode = currentNode->kneighbors;
         while (kneighborNode != NULL) {

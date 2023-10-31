@@ -52,7 +52,6 @@ void nndescent(Graph* graph, int k){
         update = 0;
         for(int i=0; i<numnodes; i++){
             Node* currentnode = graph->nodes[i];
-            printf("%d \n",currentnode->numnode);
             ListNode* neighbors = connectlist(currentnode->kneighbors,currentnode->rneighbors);
             ListNode* currentneighbor = neighbors;
             KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));

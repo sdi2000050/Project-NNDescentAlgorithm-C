@@ -27,12 +27,15 @@ int main(int argc, char *argv[]) {
     }
 
     Node** nodes = getnodes(input_file,&numnodes,dim);
-    
+
     Graph* graph = createGraph(numnodes);
     
 
     createRandomGraph (graph,nodes,k);
 
+    printNeighbors(graph);
+
+    nndescent(graph,k);
     printNeighbors(graph);
 
     free(nodes);
