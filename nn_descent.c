@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "graph.h"
-
+/*
 int main(void) {
     // Create a graph with 6 nodes
     Graph* graph = createGraph(6);
@@ -43,7 +43,7 @@ int main(void) {
 
     return 0;
 }
-
+*/
 
 void nndescent(Graph* graph, int k){
     int update = 1;
