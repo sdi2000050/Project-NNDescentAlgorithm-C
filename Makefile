@@ -10,8 +10,8 @@ graph_Implementation.o: graph_Implementation.c
 nn_descent.o: nn_descent.c
 	gcc -c nn_descent.c -o nn_descent.o
 
-test : test.o graph_Implementation.o 
-	gcc graph_Implementation.o test.o -o test -lm 
+test : test.o graph_Implementation.o nn_descent.o
+	gcc graph_Implementation.o nn_descent.o test.o -o test -lm 
 
 test.o : test.c 
 	gcc -c test.c -o test.o 

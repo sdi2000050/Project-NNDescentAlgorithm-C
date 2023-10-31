@@ -21,3 +21,8 @@ typedef struct Graph {
     int numnodes;
     Node** nodes;
 } Graph;
+
+typedef struct kdistances{
+    Node* node;
+    float dis;
+}KDistance;

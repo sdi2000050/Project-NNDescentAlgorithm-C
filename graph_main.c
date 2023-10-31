@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     }
 
     Node** nodes = getnodes(input_file,&numnodes,dim);
-
+    
     Graph* graph = createGraph(numnodes);
     
 

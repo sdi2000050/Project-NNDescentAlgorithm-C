@@ -22,12 +22,12 @@ void printpoint(point point) {
     printf("\n");
 }
 
-Node* create_node(int n, point* p) {
+Node* create_node(int n, ListNode* kn, ListNode* rn, point* p) {
     Node* node = (Node*) malloc(sizeof(Node));
     node->numnode = n;
     node->data = p;
-    node->kneighbors = NULL;
-    node->rneighbors = NULL;
+    node->kneighbors = kn;
+    node->rneighbors = rn;
     return node;
 }
 
@@ -87,7 +87,7 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     }
 
     for (int i = 0; i < num_points; i++) {
-        nodes[i] = create_node(i, &points[i]);
+        nodes[i] = create_node(i, NULL, NULL, &points[i]);
     }
 
     *numnodes = num_points;
@@ -179,6 +179,7 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
 void printNeighbors(Graph* graph) {
     for (int i = 0; i < graph->numnodes; ++i) {
         Node* currentNode = graph->nodes[i];
+        printf("Node %d coords: %f %f \n",currentNode->numnode,currentNode->data->coord[0],currentNode->data->coord[1]);
         printf("Node %d kneighbors: ", currentNode->numnode);
         ListNode* kneighborNode = currentNode->kneighbors;
         while (kneighborNode != NULL) {
@@ -197,58 +198,3 @@ void printNeighbors(Graph* graph) {
     }
 }
 
-
-int exist(int numnode, ListNode* list){
-    ListNode* current = (ListNode*) malloc(sizeof(ListNode));
-    current = list;
-    while(current!=NULL){
-        if (current->node->numnode == numnode){
-            return 1;
-        }
-        current = current->nextnode;
-    }
-    return 0;
-}
-
-ListNode* connectlist(ListNode* a, ListNode* b){
-    ListNode* c = NULL;
-    ListNode* currc = NULL;
-
-    while ( a != NULL){
-        if(exist(a->node->numnode,c) == 0){
-            ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = create_node(a->node->numnode,a->node->data);
-            newnode->nextnode = NULL;    
-
-            if( c == NULL){
-                c = newnode;
-                currc = newnode;
-            }else{
-                currc->nextnode = newnode;
-                currc = newnode;
-            }
-
-        }    
-        a = a->nextnode;
-    }
-
-    while ( b != NULL){
-        if(exist(b->node->numnode,c) == 0){
-            ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = create_node(b->node->numnode,b->node->data);
-            newnode->nextnode = NULL;    
-
-            if( c == NULL){
-                c = newnode;
-                currc = newnode;
-            }else{
-                currc->nextnode = newnode;
-                currc = newnode;
-            }
-
-        }    
-        b = b->nextnode;
-    }
-
-    return c;
-}
