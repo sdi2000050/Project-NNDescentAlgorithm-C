@@ -23,7 +23,7 @@ void test_createNode() {
 	point* p = (point*) malloc(sizeof(point));
 	setcoords(p, coor, 2);
 
-	Node* node = create_node(0, p);
+	Node* node = create_node(0, NULL, NULL, p);
 
 	TEST_ASSERT(node != NULL);
 	TEST_ASSERT(node->data->coord[0] == coor[0] && node->data->coord[1] == coor[1]);
@@ -46,19 +46,19 @@ void test_graph_addedge(void) {
 
 	point* p0 = (point*) malloc(sizeof(point));
 	setcoords(p0, data[0], 3);
-	Node* n0 = create_node(0, p0);
+	Node* n0 = create_node(0, NULL, NULL, p0);
 
 	point* p1 = (point*) malloc(sizeof(point));
 	setcoords(p1, data[1], 3);
-	Node* n1 = create_node(1, p1);
+	Node* n1 = create_node(1, NULL, NULL, p1);
 
 	point* p2 = (point*) malloc(sizeof(point));
 	setcoords(p2, data[2], 3);
-	Node* n2 = create_node(2, p2);
+	Node* n2 = create_node(2, NULL, NULL, p2);
 
 	point* p3 = (point*) malloc(sizeof(point));
 	setcoords(p3, data[3], 3);
-	Node* n3 = create_node(3, p3);
+	Node* n3 = create_node(3, NULL, NULL, p3);
 
 	addEdge(graph, n0, n1);
 	addEdge(graph, n1, n2);
@@ -83,17 +83,22 @@ void test_graph_addedge(void) {
 }
 
 void test_listsize() {
-	int size = rand() % 100;
+	int size = rand() % 100 + 1;
 	ListNode* list = (ListNode*) malloc(sizeof(ListNode));
-	list->node = create_node(0, NULL);
+    ListNode* first = list;
 
-	for(int i = 1; i < size; i++) {
-		ListNode* next = (ListNode*) malloc(sizeof(ListNode));
-		next->node = create_node(i, NULL);
-		list->nextnode = next;
-		list = list->nextnode;
+	for(int i = 0; i < size; i++) {
+		if(i == 0) {
+			list->node == create_node(i, NULL, NULL, NULL);
+		}
+		else {
+			list->nextnode = (ListNode*) malloc(sizeof(ListNode));
+			list->nextnode->node = create_node(i, NULL, NULL, NULL);
+			list = list->nextnode;
+		}
 	}
 
+    list = first; 
 	TEST_ASSERT(list_size(list) == size);
 }
 
@@ -103,14 +108,13 @@ void test_exist() {
 	ListNode* b = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* c = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n0 = create_node(0, NULL);
-	Node* n1 = create_node(1, NULL);
-	Node* n2 = create_node(2, NULL);
+	Node* n0 = create_node(0, NULL, NULL, NULL);
+	Node* n1 = create_node(1, NULL, NULL, NULL);
+	Node* n2 = create_node(2, NULL, NULL, NULL);
 
 	a->node = n0;
 	b->node = n1;
 	c->node = n2;
-
 
 	a->nextnode = b;
 	b->nextnode = c;
@@ -130,9 +134,9 @@ void test_connectlist() {
 	ListNode* b = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* c = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n0 = create_node(0, NULL);
-	Node* n1 = create_node(1, NULL);
-	Node* n2 = create_node(2, NULL);
+	Node* n0 = create_node(0, NULL, NULL, NULL);
+	Node* n1 = create_node(1, NULL, NULL, NULL);
+	Node* n2 = create_node(2, NULL, NULL, NULL);
 
 	a->node = n0;
 	b->node = n1;
@@ -146,9 +150,9 @@ void test_connectlist() {
 	ListNode* e = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* f = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n4 = create_node(0, NULL);
-	Node* n5 = create_node(5, NULL);
-	Node* n6 = create_node(6, NULL);
+	Node* n4 = create_node(0, NULL, NULL, NULL);
+	Node* n5 = create_node(5, NULL, NULL, NULL);
+	Node* n6 = create_node(6, NULL, NULL, NULL);
 
 	d->node = n4;
 	e->node = n5;
@@ -169,6 +173,35 @@ void test_connectlist() {
 	}
 }
 
+void test_deletenode() {
+	int size = rand() % 100 + 1;
+    ListNode** all = (ListNode**) malloc(sizeof(ListNode*));
+	ListNode* list = (ListNode*) malloc(sizeof(ListNode));
+    *all = list;
+    ListNode* first = list;
+
+	for(int i = 0; i < size; i++) {
+		if(i == 0) {
+			list->node = create_node(i, NULL, NULL, NULL);
+		}
+		else {
+			list->nextnode = (ListNode*) malloc(sizeof(ListNode));
+			list->nextnode->node = create_node(i, NULL, NULL, NULL);
+			list = list->nextnode;
+		}
+	}
+    list = first;
+	deletenode(all, 1);
+    int i = rand() % size;
+    if (i == 1) {
+        i = i + 2;
+    }
+    deletenode(all, i);
+
+    TEST_ASSERT(exist(i, *all) == 0);
+	TEST_ASSERT(exist(1, *all) == 0);
+}
+
 
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
@@ -177,6 +210,7 @@ TEST_LIST = {
 	{ "addEdge", test_graph_addedge},
 	{ "list_size", test_listsize},	
 	{ "exist", test_exist},	
-	{ "connectlist", test_connectlist},	
+	{ "connectlist", test_connectlist},
+	{ "deletenode", test_deletenode},	
 	{ NULL, NULL } 
 };
