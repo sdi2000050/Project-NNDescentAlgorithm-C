@@ -13,8 +13,8 @@ nn_descent.o: nn_descent.c
 distances.o: distances.c
 	gcc -c distances.c -o distances.o
 
-test : test.o graph_Implementation.o nn_descent.o distances.o
-	gcc graph_Implementation.o nn_descent.o test.o distances.o -o test -lm 
+test : test.o graph_Implementation.o nn_descent.o
+	gcc graph_Implementation.o nn_descent.o test.o -o test -lm 
 
 test.o : test.c 
 	gcc -c test.c -o test.o 
