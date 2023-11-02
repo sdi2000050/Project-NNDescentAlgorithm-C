@@ -3,47 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "graph.h"
-/*
-int main(void) {
-    // Create a graph with 6 nodes
-    Graph* graph = createGraph(6);
 
-    // Creating sample nodes
-    Node* nodes[6];
-    for (int i = 0; i < 6; ++i) {
-        point* p = (point*)malloc(sizeof(point));
-        p->dim=2;
-        float coords[2] = {i, i};  // Assigning some arbitrary coordinates for testing
-        setcoords(p, coords, 2);
-        nodes[i] = create_node(i,NULL,NULL,p);
-    }
-
-    // Connecting nodes randomly to form an initial graph
-    createRandomGraph(graph, nodes, 2);
-
-    // Print the initial graph
-    printf("Initial Graph:\n");
-    printNeighbors(graph);
-
-    // Run nndescent algorithm
-    nndescent(graph, 2);
-
-    // Print the updated graph
-    printf("\nGraph after NN Descent:\n");
-    printNeighbors(graph);
-
-    // Clean up: Free memory
-    for (int i = 0; i < 6; ++i) {
-        free(nodes[i]->data->coord);
-        free(nodes[i]->data);
-        free(nodes[i]);
-    }
-    free(graph->nodes);
-    free(graph);
-
-    return 0;
-}
-*/
 
 void nndescent(Graph* graph, int k){
     int update = 1;
