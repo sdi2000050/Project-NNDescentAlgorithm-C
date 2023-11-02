@@ -202,6 +202,21 @@ void test_deletenode() {
 	TEST_ASSERT(exist(1, *all) == 0);
 }
 
+void test_notinarray() {
+	int size = rand() % 50 +1;
+	KDistance** kd = (KDistance**) malloc (size * sizeof(KDistance*));
+	for(int i = 0; i < size; i++) {
+		kd[i] = (KDistance*)malloc(sizeof(KDistance));
+		kd[i]->node = create_node(i, NULL, NULL, NULL);
+	}
+
+	for(int i = 0; i < size; i++) {
+		TEST_ASSERT(notinarray(i, kd, size) == 0 );
+	}
+	for(int i = size; i < 2*size; i++) {
+		TEST_ASSERT(notinarray(i, kd, size) == 1 );
+	}
+}
 
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
@@ -212,5 +227,6 @@ TEST_LIST = {
 	{ "exist", test_exist},	
 	{ "connectlist", test_connectlist},
 	{ "deletenode", test_deletenode},	
+	{ "notinarray", test_notinarray},	
 	{ NULL, NULL } 
 };
