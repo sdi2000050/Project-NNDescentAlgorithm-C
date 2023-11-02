@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <math.h>
 #include "graph.h"
 
 int main(int argc, char *argv[]) {
@@ -33,6 +32,9 @@ int main(int argc, char *argv[]) {
 
     createRandomGraph (graph,nodes,k);
 
+    printNeighbors(graph);
+
+    nndescent(graph,k);
     printNeighbors(graph);
 
     free(nodes);

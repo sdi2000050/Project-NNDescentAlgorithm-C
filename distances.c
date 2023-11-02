@@ -11,7 +11,7 @@ float euclidean_distance(point x, point y) {
     return sqrt(s);
 }
 
-double manhattan_distance(point x, point y) {
+float manhattan_distance(point x, point y) {
     float s = 0.0;
     for (int i = 0; i < x.dim; i++) {
         s = s + abs(x.coord[i] - y.coord[i]);
