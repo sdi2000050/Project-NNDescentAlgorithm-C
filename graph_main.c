@@ -57,6 +57,10 @@ int main(int argc, char *argv[]) {
         else{
             printf("Invalid input\n");
         }
+        
+        printf("Final KNN Graph:\n");
+        
+        printNeighbors(graph);
     }
     else if(nn_num==2){
         point* p = malloc(sizeof(point));
@@ -106,11 +110,6 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
     }
-
-
-    printf("Final KNN Graph:\n");
-    
-    printNeighbors(graph);
 
     free(nodes);
     free(graph->nodes);
