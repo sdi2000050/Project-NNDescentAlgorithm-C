@@ -3,6 +3,8 @@ typedef struct {
     int dim;
 } point;
 
+typedef float (*Distancefunc)(point, point);
+
 typedef struct ListNode ListNode;
 
 typedef struct Node {

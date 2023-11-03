@@ -1,5 +1,12 @@
-graph_main: graph_main.o graph_Implementation.o nn_descent.o distances.o
-	gcc graph_Implementation.o nn_descent.o distances.o graph_main.o -o graph_main -lm
+LIBRARY_NAME = libgraph.a
+
+all: graph_main
+
+graph_main: graph_main.o $(LIBRARY_NAME)
+	gcc graph_main.o -L. -lgraph -o graph_main -lm
+
+$(LIBRARY_NAME): graph_Implementation.o nn_descent.o distances.o
+	ar rcs $(LIBRARY_NAME) graph_Implementation.o nn_descent.o distances.o
 
 graph_main.o: graph_main.c  
 	gcc -c graph_main.c -o graph_main.o 
@@ -20,5 +27,5 @@ test.o : test.c
 	gcc -c test.c -o test.o 
 
 clean:
-	rm -f *.o graph_main
+	rm -f *.o *.a graph_main
 	rm -f *.o test

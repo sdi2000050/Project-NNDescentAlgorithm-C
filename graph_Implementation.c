@@ -21,9 +21,20 @@ void printpoint(point point) {
     printf("\n");
 }
 
+int list_size(ListNode* list) {
+    ListNode* first = list;
+    int count = 0;
+    while(list != NULL) {
+        count++;
+        list = list->nextnode;
+    }
+    list = first;
+    return count;
+}
+
 Node* create_node(int n, ListNode* kn, ListNode* rn, point* p) {
     Node* node = (Node*) malloc(sizeof(Node));
-    node->numnode = n;
+    node->numnode = n;                                              
     node->data = p;
     node->kneighbors = kn;
     node->rneighbors = rn;
@@ -44,14 +55,14 @@ Graph* createGraph(int numnodes) {
 
 
 Node** getnodes(char* filename, int* numnodes, int dim) {
-    FILE *file = fopen(filename, "rb");  // Open the file in binary mode
+    FILE *file = fopen(filename, "rb");                                 // Open the file in binary mode
     if (file == NULL) {
         fprintf(stderr, "Error opening file: %s\n", filename);
         exit(EXIT_FAILURE);
     }
 
-    // Read the number of points from the file
-    int num_points;
+    
+    int num_points;                                                     // Read the number of points from the file
     if (fread(&num_points, sizeof(int), 1, file) != 1) {
         fprintf(stderr, "Error reading the number of points from file\n");
         exit(EXIT_FAILURE);
@@ -70,8 +81,8 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
             exit(EXIT_FAILURE);
         }
 
-        // Read the floats for the current point from the file
-        if (fread(values, sizeof(float), dim, file) != dim) {
+        
+        if (fread(values, sizeof(float), dim, file) != dim) {         // Read the floats coords for the current point from the file
             fprintf(stderr, "Error reading data from file\n");
             exit(EXIT_FAILURE);
         }
@@ -100,10 +111,10 @@ void createRandomGraph(Graph* graph, Node** nodes, int k) {
     for (int i = 0; i < numnodes; ++i) {
         int count = 0;
         while (count < k) {
-            int randomNeighbor = rand() % numnodes;                     // Random neighbor node index
+            int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
             if (randomNeighbor != i) {
                 exit = addEdge(graph, nodes[i], nodes[randomNeighbor]);
-                if (exit == 0){                                           // Check if a new edge was created    
+                if (exit == 0){                                             // Check if a new edge was created    
                     count++;
                 }
             }
@@ -113,11 +124,11 @@ void createRandomGraph(Graph* graph, Node** nodes, int k) {
 
 int addEdge(Graph* graph, Node* src, Node* dest) {
     
-    ListNode* destNode = (ListNode*)malloc(sizeof(ListNode));           // Create a new list node for destination node
+    ListNode* destNode = (ListNode*)malloc(sizeof(ListNode));               // Create a new list node for destination node
     destNode->node = dest;
     destNode->nextnode = NULL;
 
-    if (src->kneighbors != NULL){                                      // Check if there is already an edge from source to destination
+    if (src->kneighbors != NULL){                                           // Check if there is already an edge from source to destination
         ListNode* curr = src->kneighbors;
         if (curr->node->numnode == dest->numnode) {
             return 1;
@@ -133,7 +144,7 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
         }
     }
     
-    if (src->kneighbors == NULL) {                                      // Add destination node to the kneighbors list of source node
+    if (src->kneighbors == NULL) {                                          // Add destination node to the kneighbors list of source node
         src->kneighbors = destNode;
     } else {
         ListNode* current = src->kneighbors;
@@ -144,12 +155,12 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
     }
 
 
-    ListNode* srcNode = (ListNode*)malloc(sizeof(ListNode));            // Create a new list node for source node (reverse neighbor)
+    ListNode* srcNode = (ListNode*)malloc(sizeof(ListNode));                // Create a new list node for source node (reverse neighbor)
     srcNode->node = src;
     srcNode->nextnode = NULL;
 
 
-    if (dest->rneighbors == NULL) {                                     // Add source node to the rneighbors list of destination node
+    if (dest->rneighbors == NULL) {                                         // Add source node to the rneighbors list of destination node
         dest->rneighbors = srcNode;
     } else {
         ListNode* current = dest->rneighbors;
@@ -160,13 +171,13 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
     }
 
 
-    int srcIndex = src->numnode;                                        // Update adjacency list for source node in the graph
+    int srcIndex = src->numnode;                                            // Update adjacency list for source node in the graph
     if (graph->nodes[srcIndex] == NULL) {
         graph->nodes[srcIndex] = src;
     }
 
 
-    int destIndex = dest->numnode;                                      // Update adjacency list for destination node in the graph
+    int destIndex = dest->numnode;                                          // Update adjacency list for destination node in the graph
     if (graph->nodes[destIndex] == NULL) {
         graph->nodes[destIndex] = dest;
     }

@@ -18,3 +18,14 @@ float manhattan_distance(point x, point y) {
     }
     return s;
 }
+
+float chebyshev_distance(point x, point y) {
+    float max = 0;
+    for(int i = 0; i < x.dim; i++) {
+        float a = abs(x.coord[i] - y.coord[i]);
+        if(a > max) {
+            max = a;
+        }
+    }
+    return max;
+}

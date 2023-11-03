@@ -4,27 +4,50 @@
 #include "graph.h"
 
 
-void nndescent(Graph* graph, int k){
+KDistance** nndescentpoint(Graph* graph, int k, int node, point p, float (*distance_value)(point, point)){
+    int numnodes = graph->numnodes;
+    KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));
+    ListNode* curr = graph->nodes[node]->kneighbors;
+    for(int m=0; m<k; m++){
+        kd[m]=(KDistance*)malloc(sizeof(KDistance));
+        kd[m]->node = curr->node;
+        kd[m]->dis = distance_value(p,*(curr->node->data));
+        curr=curr->nextnode;
+    }
+    sort(kd,k);
+    for(int i=node; i<numnodes; i++){
+        Node* currentnode = graph->nodes[i];
+        ListNode* currentneighbor = connectlist(currentnode->kneighbors,currentnode->rneighbors);
+        while(currentneighbor != NULL){
+            ListNode* nneighbors = connectlist(currentneighbor->node->kneighbors,currentneighbor->node->rneighbors);
+            checkneighborspoint(p,nneighbors,kd,k,distance_value);
+            currentneighbor = currentneighbor->nextnode;
+        }
+    }
+    return kd;
+}
+
+
+void nndescent(Graph* graph, int k, float (*distance_value)(point, point)){
     int update = 1;
     int numnodes = graph->numnodes;
     while(update){
         update = 0;
         for(int i=0; i<numnodes; i++){
             Node* currentnode = graph->nodes[i];
-            ListNode* neighbors = connectlist(currentnode->kneighbors,currentnode->rneighbors);
-            ListNode* currentneighbor = neighbors;
+            ListNode* currentneighbor = connectlist(currentnode->kneighbors,currentnode->rneighbors);
             KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));
             ListNode* curr = currentnode->kneighbors;
             for(int m=0; m<k; m++){
                 kd[m]=(KDistance*)malloc(sizeof(KDistance));
                 kd[m]->node = curr->node;
-                kd[m]->dis = euclidean_distance(*(currentnode->data),*(curr->node->data));
+                kd[m]->dis = distance_value(*(currentnode->data),*(curr->node->data));
                 curr=curr->nextnode;
             }
             sort(kd,k);
             while(currentneighbor != NULL){
                 ListNode* nneighbors = connectlist(currentneighbor->node->kneighbors,currentneighbor->node->rneighbors);
-                checkneighbors(currentnode,nneighbors,kd,k);
+                checkneighbors(currentnode,nneighbors,kd,k,distance_value);
                 int count=0;
                 for(int l=0; l<k; l++){
                     if (exist(kd[l]->node->numnode,currentnode->kneighbors) == 1){
@@ -100,11 +123,11 @@ int notinarray(int numnode, KDistance** kd, int k){
     return 1;
 }
 
-void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k){
+void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k, float (*distance_value)(point, point)){
     ListNode* curr = neighbors;
     while(curr!=NULL){
         if (node->numnode != curr->node->numnode){
-            float dis = euclidean_distance(*(curr->node->data),*(node->data));
+            float dis = distance_value(*(curr->node->data),*(node->data));
             if( kd[k-1]->dis > dis && notinarray(curr->node->numnode,kd,k) == 1){
                 kd[k-1]->node = curr->node;
                 kd[k-1]->dis = dis;
@@ -115,6 +138,18 @@ void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k){
     }
 }
 
+void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, float (*distance_value)(point, point)){
+    ListNode* curr = neighbors;
+    while(curr!=NULL){
+        float dis = distance_value(*(curr->node->data),p);
+        if( kd[k-1]->dis > dis && notinarray(curr->node->numnode,kd,k) == 1){
+            kd[k-1]->node = curr->node;
+            kd[k-1]->dis = dis;
+            sort(kd, k);
+        }
+        curr=curr->nextnode;
+    }
+}
 
 int exist(int numnode, ListNode* list){
     ListNode* current = list;

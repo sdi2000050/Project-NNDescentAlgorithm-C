@@ -31,10 +31,27 @@ int main(int argc, char *argv[]) {
     
 
     createRandomGraph (graph,nodes,k);
-
+    printf("Initial Graph:\n");
     printNeighbors(graph);
+    printf("\n");
 
-    nndescent(graph,k);
+    Distancefunc dis;
+    printNeighbors(graph);
+    printf("Press 1 for euclidean distance\nPress 2 for manhattan distance\nPress 3 for chebyshev distance \n");
+    int dis_num;
+    scanf("%d", &dis_num);
+    if(dis_num == 1) {
+        nndescent(graph,k,euclidean_distance);    
+    }
+    if(dis_num == 2) {
+        nndescent(graph,k,manhattan_distance);    
+    }
+    if(dis_num == 3) {
+        nndescent(graph,k,chebyshev_distance);    
+    }
+
+
+    printf("Final KNN Graph:\n");
     printNeighbors(graph);
 
     free(nodes);
