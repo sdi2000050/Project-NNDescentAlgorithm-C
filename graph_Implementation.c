@@ -41,6 +41,17 @@ Node* create_node(int n, ListNode* kn, ListNode* rn, point* p) {
     return node;
 }
 
+int list_size(ListNode* list) {
+    ListNode* first = list;
+    int count = 0;
+    while(list != NULL) {
+        count++;
+        list = list->nextnode;
+    }
+    list = first;
+    return count;
+}
+
 Graph* createGraph(int numnodes) {
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->numnodes = numnodes;

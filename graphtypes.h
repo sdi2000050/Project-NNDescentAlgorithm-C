@@ -1,3 +1,4 @@
+
 typedef struct {
     float *coord;
     int dim;

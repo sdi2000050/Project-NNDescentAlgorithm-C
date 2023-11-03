@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
 
 
     printf("Final KNN Graph:\n");
+    
     printNeighbors(graph);
 
     free(nodes);
