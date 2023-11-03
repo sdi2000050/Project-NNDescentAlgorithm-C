@@ -4,7 +4,7 @@
 #include "graph.h"
 
 
-void nndescent(Graph* graph, int k){
+void nndescent(Graph* graph, int k, float (*distance_value)(point, point)){
     int update = 1;
     int numnodes = graph->numnodes;
     while(update){
@@ -18,7 +18,7 @@ void nndescent(Graph* graph, int k){
             for(int m=0; m<k; m++){
                 kd[m]=(KDistance*)malloc(sizeof(KDistance));
                 kd[m]->node = curr->node;
-                kd[m]->dis = euclidean_distance(*(currentnode->data),*(curr->node->data));
+                kd[m]->dis = distance_value(*(currentnode->data),*(curr->node->data));
                 curr=curr->nextnode;
             }
             sort(kd,k);

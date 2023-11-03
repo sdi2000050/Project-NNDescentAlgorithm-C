@@ -18,9 +18,10 @@ void printNeighbors(Graph* graph);
 //**********Distances**********
 float euclidean_distance(point x, point y);
 float manhattan_distance(point x, point y);
+float chebyshev_distance(point x, point y);
 
 //**********NN Descent**********
-void nndescent(Graph* graph, int k);
+void nndescent(Graph* graph, int k, Distancefunc distance_value);
 void deletenode(ListNode** list, int node);
 void updateneighbors(Graph* graph, int node);
 int notinarray(int numnode, KDistance** kd, int k);
