@@ -15,7 +15,9 @@ void test_pointcoords() {
 	TEST_ASSERT(p->coord[0] == array[0]);
 	for(int i = 0; i < N; i++) {
 		TEST_ASSERT(p->coord[i] == array[i]);
-	} 
+	}
+	free(p->coord);
+	free(p); 
 }
 
 void test_createNode() {
@@ -27,7 +29,9 @@ void test_createNode() {
 
 	TEST_ASSERT(node != NULL);
 	TEST_ASSERT(node->data->coord[0] == coor[0] && node->data->coord[1] == coor[1]);
-    free(node);
+    free(p->coord);
+	free(p);
+	free(node);
 }
 
 void test_createGraph() {
@@ -36,6 +40,7 @@ void test_createGraph() {
 
 	TEST_ASSERT(graph != NULL);
 	TEST_ASSERT(graph->numnodes == 0);
+	free(graph->nodes);
     free(graph);
 }
 
@@ -80,6 +85,7 @@ void test_graph_addedge(void) {
 
 	l = n3->kneighbors;
 	TEST_ASSERT(l == NULL);	
+
 }
 
 void test_listsize() {
@@ -100,6 +106,13 @@ void test_listsize() {
 
     list = first; 
 	TEST_ASSERT(list_size(list) == size);
+
+	while(list != NULL) {
+		ListNode* next = list->nextnode;
+		free(list->node);
+		free(list);
+		list = next;
+	}
 }
 
 void test_exist() {
@@ -125,6 +138,13 @@ void test_exist() {
 	}
 	for (int i = 0; i < 3; i++) {
 		TEST_ASSERT(exist(10 - i, a) == 0);
+	}
+
+	while(a != NULL) {
+		ListNode* next = a->nextnode;
+		free(a->node);
+		free(a);
+		a = next;
 	}
 }
 
@@ -200,6 +220,19 @@ void test_deletenode() {
 
     TEST_ASSERT(exist(i, *all) == 0);
 	TEST_ASSERT(exist(1, *all) == 0);
+	for(int j = 0; j < size; j++) {
+		if(j != i && j != 1){
+			TEST_ASSERT(exist(j, *all) == 1);
+		}
+	}
+
+	while(list != NULL) {
+		ListNode* next = list->nextnode;
+		free(list->node);
+		list = next;
+	}
+	free(all);
+	free(list);
 }
 
 void test_notinarray() {
@@ -216,6 +249,12 @@ void test_notinarray() {
 	for(int i = size; i < 2*size; i++) {
 		TEST_ASSERT(notinarray(i, kd, size) == 1 );
 	}
+
+	for(int i = 0; i < size; i++) {
+		free(kd[i]->node);
+		free(kd[i]);
+	}
+	free(kd);
 }
 
 TEST_LIST = {
