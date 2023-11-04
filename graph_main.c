@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
 
     char *input_file = NULL;
-    char *input_point;
+    char *input_point = NULL;
     int numnodes;
     int dim = 0;
     int k = 0;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid input\n");
         }
         printf("%d nearest nodes to point:\n",k);
-        for(int i; i < k; i++){
+        for(int i=0; i < k; i++){
             printf("%d ",kd[i]->node->numnode);
         }
         printf("\n");
@@ -125,8 +125,11 @@ int main(int argc, char *argv[]) {
     else {
         printf("Invalid imput of algorithm format");
     }
+    
 
-
+    for(int i=0; i<numnodes; i++){
+        free(nodes[i]);
+    }
     free(nodes);
     free(graph->nodes);
     free(graph);
