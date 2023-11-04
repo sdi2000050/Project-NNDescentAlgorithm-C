@@ -23,7 +23,9 @@ KDistance** nndescentpoint(Graph* graph, int k, int node, point p, float (*dista
             checkneighborspoint(p,nneighbors,kd,k,distance_value);              // Check if the neighbor nodes are nearest to point 
             currentneighbor = currentneighbor->nextnode;
         }
+        free(currentneighbor);
     }
+    free(curr);
     return kd;
 }
 
@@ -66,6 +68,12 @@ void nndescent(Graph* graph, int k, float (*distance_value)(point, point)){
                 }
                 currentneighbor = currentneighbor->nextnode;                    
             }
+            free(currentneighbor);
+            free(curr);
+            for(int j=0; j<k; j++){
+                free(kd[j]);
+            }
+            free(kd);
         }
     }
 }
@@ -76,7 +84,6 @@ void deletenode(ListNode** list, int node) {
 
     if (curr != NULL && curr->node->numnode == node) {
         *list = curr->nextnode; 
-        free(curr); 
         return;
     }
 
@@ -90,7 +97,7 @@ void deletenode(ListNode** list, int node) {
     }
 
     prev->nextnode = curr->nextnode;
-    free(curr); 
+    free(curr);
 }
 
 
@@ -136,6 +143,7 @@ void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k, floa
         }
         curr=curr->nextnode;
     }
+    free(curr);
 }
 
 void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, float (*distance_value)(point, point)){
@@ -149,6 +157,7 @@ void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, fl
         }
         curr=curr->nextnode;
     }
+    free(curr);
 }
 
 int exist(int numnode, ListNode* list){
@@ -197,7 +206,6 @@ ListNode* connectlist(ListNode* a, ListNode* b){
                 currc->nextnode = newnode;
                 currc = newnode;
             }
-
         }    
         b = b->nextnode;
     }

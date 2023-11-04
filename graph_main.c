@@ -109,10 +109,23 @@ int main(int argc, char *argv[]) {
             printf("%d ",kd[i]->node->numnode);
         }
         printf("\n");
+
+
+        free(p->coord); 
+        free(p);        
+
+        free(values);  
+        for(int i=0; i<k; i++){
+            free(kd[i]);
+        }
+        free(kd);
+        fclose(file);
+
     }
     else {
         printf("Invalid imput of algorithm format");
     }
+
 
     free(nodes);
     free(graph->nodes);
