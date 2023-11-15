@@ -1,6 +1,6 @@
 #include "acutest.h"			// Απλή βιβλιοθήκη για unit testing
 #include "graph.h"
-
+#include "math.h"
 
 void test_pointcoords() {
 	int N = 100;
@@ -95,13 +95,17 @@ void test_listsize() {
 
 	for(int i = 0; i < size; i++) {
 		if(i == 0) {
-			list->node == create_node(i, NULL, NULL, NULL);
+			list->node = create_node(i, NULL, NULL, NULL);
 		}
 		else {
 			list->nextnode = (ListNode*) malloc(sizeof(ListNode));
 			list->nextnode->node = create_node(i, NULL, NULL, NULL);
 			list = list->nextnode;
 		}
+	}
+
+	if(list != NULL) {
+		list->nextnode = NULL;
 	}
 
     list = first; 
@@ -216,6 +220,11 @@ void test_deletenode() {
 			list = list->nextnode;
 		}
 	}
+
+	if(list != NULL) {
+		list->nextnode = NULL;
+	}
+
     list = first;
 	deletenode(all, 1);
     int i = rand() % size;
@@ -263,6 +272,107 @@ void test_notinarray() {
 	free(kd);
 }
 
+#define epsilon 1e-6
+
+void test_euclidean() {
+	point* a = (point*) malloc(sizeof(point));
+	float coora[] = {2.2, 3.5};
+	setcoords(a, coora, 2);
+
+	point* b = (point*) malloc(sizeof(point));
+	float coorb[] = {1.4, 2.9};
+	setcoords(b, coorb, 2);
+
+	float dist = euclidean_distance(*a, *b);
+	TEST_ASSERT(fabs(dist - 1.0) < epsilon);
+
+	float coor1[] = {2.3, 1.5, 4.0};
+	point* c = (point*) malloc(sizeof(point));
+	setcoords(c, coor1, 3);
+
+	float coor2[] = {3.7, 1.5, 5.4};
+	point* d = (point*) malloc(sizeof(point));
+	setcoords(d, coor2, 3);
+
+	dist = euclidean_distance(*c, *d);
+	TEST_ASSERT(fabs(dist - 1.9799) < epsilon);
+
+	free(a->coord);
+	free(b->coord);
+	free(c->coord);
+	free(d->coord);
+	free(a);
+	free(b);
+	free(c);
+	free(d);
+}
+
+void test_manhattan() {
+	point* a = (point*) malloc(sizeof(point));
+	float coora[] = {4.4, 2.7};
+	setcoords(a, coora, 2);
+
+	point* b = (point*) malloc(sizeof(point));
+	float coorb[] = {3.2, 2.9};
+	setcoords(b, coorb, 2);
+
+	float dist = manhattan_distance(*a, *b);
+	TEST_ASSERT(fabs(dist - 1.4) < epsilon);
+
+	float coor1[] = {1.1, 2.8, 6.2};
+	point* c = (point*) malloc(sizeof(point));
+	setcoords(c, coor1, 3);
+
+	float coor2[] = {2.5, 4.7, 7.1};
+	point* d = (point*) malloc(sizeof(point));
+	setcoords(d, coor2, 3);
+
+	dist = manhattan_distance(*c, *d);
+	TEST_ASSERT(fabs(dist - 4.2) < epsilon);
+
+	free(a->coord);
+	free(b->coord);
+	free(c->coord);
+	free(d->coord);
+	free(a);
+	free(b);
+	free(c);
+	free(d);
+}
+
+void test_chebyshev() {
+	point* a = (point*) malloc(sizeof(point));
+	float coora[] = {1.4, 3.9};
+	setcoords(a, coora, 2);
+
+	point* b = (point*) malloc(sizeof(point));
+	float coorb[] = {3.2, 6.6};
+	setcoords(b, coorb, 2);
+
+	float dist = chebyshev_distance(*a, *b);
+	TEST_ASSERT(fabs(dist - 2.7) < epsilon);
+
+ 	float coor1[] = {1.1, 2.8, 6.2};
+	point* c = (point*) malloc(sizeof(point));
+	setcoords(c, coor1, 3);
+
+	float coor2[] = {2.5, 4.7, 7.1};
+	point* d = (point*) malloc(sizeof(point));
+	setcoords(d, coor2, 3);
+
+	dist = chebyshev_distance(*c, *d);
+	TEST_ASSERT(fabs(dist - 1.9) < epsilon);
+
+	free(a->coord);
+	free(b->coord);
+	free(c->coord);
+	free(d->coord);
+	free(a);
+	free(b);
+	free(c);
+	free(d); 
+}
+
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
 	{ "createNode", test_createNode},
@@ -272,6 +382,9 @@ TEST_LIST = {
 	{ "exist", test_exist},	
 	{ "connectlist", test_connectlist},
 	{ "deletenode", test_deletenode},	
-	{ "notinarray", test_notinarray},	
+	{ "notinarray", test_notinarray},
+	{ "euclidean_distance", test_euclidean},
+	{ "manhattan_distance", test_manhattan},
+	{ "chebyshev_distance", test_chebyshev},	
 	{ NULL, NULL } 
 };
