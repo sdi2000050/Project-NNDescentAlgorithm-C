@@ -191,6 +191,12 @@ void test_connectlist() {
 		TEST_ASSERT(list->node != n5);
 		list = list->nextnode;
 	}
+	while(list != NULL) {
+		ListNode* next = list->nextnode;
+		free(list->node);
+		list = next;
+	}
+	free(list);
 }
 
 void test_deletenode() {
