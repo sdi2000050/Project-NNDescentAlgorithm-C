@@ -13,9 +13,10 @@ int main(int argc, char *argv[]) {
     int dim = 0;
     int k = 0;
     char* dist;
+    char* mode;
 
-    if (argc != 7) {
-        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance\n", argv[0]);
+    if (argc != 8) {
+        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance mode\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]) {
     dim = atoi(argv[4]);
     k = atoi(argv[5]); 
     dist = argv[6];
+    mode = argv[7];
 
     if (dim <= 0 || k <= 0) {
         fprintf(stderr, "Invalid number of nodes or dimension.\n");
@@ -42,84 +44,84 @@ int main(int argc, char *argv[]) {
     printf("\n");
 
     Distancefunc dis;                                       
+    if (strcmp(mode,"point")==0){
+        // Point implementation of NN Descent   
+        printf("\nPoint implementation of NN Descent:\n"); 
+        point* p = malloc(sizeof(point));
+        FILE* file = fopen(input_point,"rb");                       // Get the coordinates of the point from the file
+        if (file == NULL) {
+            fprintf(stderr, "Error opening file: %s\n", input_point);
+            exit(EXIT_FAILURE);
+        }
+        
+        if (p == NULL) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
 
-    // Point implementation of NN Descent   
-    printf("\nPoint implementation of NN Descent:\n"); 
-    point* p = malloc(sizeof(point));
-    FILE* file = fopen(input_point,"rb");                       // Get the coordinates of the point from the file
-    if (file == NULL) {
-        fprintf(stderr, "Error opening file: %s\n", input_point);
-        exit(EXIT_FAILURE);
-    }
-    
-    if (p == NULL) {
-        fprintf(stderr, "Memory allocation error\n");
-        exit(EXIT_FAILURE);
-    }
+        float* values = malloc(dim * sizeof(float));
+        if (values == NULL) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
 
-    float* values = malloc(dim * sizeof(float));
-    if (values == NULL) {
-        fprintf(stderr, "Memory allocation error\n");
-        exit(EXIT_FAILURE);
-    }
+        
+        if (fread(values, sizeof(float), dim, file) != dim) {           // Read the floats coords for the current point from the file
+            fprintf(stderr, "Error reading data from file\n");
+            exit(EXIT_FAILURE);
+        }
 
-    
-    if (fread(values, sizeof(float), dim, file) != dim) {           // Read the floats coords for the current point from the file
-        fprintf(stderr, "Error reading data from file\n");
-        exit(EXIT_FAILURE);
-    }
+        setcoords(p,values,dim);                                        //Set the coordinates of the point
+        
+        KDistance** kd;
+        if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
+            kd = nndescentpoint(graph,k,stn,*p,euclidean_distance);       
+        }
+        else if(strcmp(dist,"manhattan") == 0) {
+            kd =nndescentpoint(graph,k,stn,*p,manhattan_distance);    
+        }
+        else if(strcmp(dist,"chebysev") == 0) {
+            kd = nndescentpoint(graph,k,stn,*p,chebyshev_distance);    
+        }
+        else{
+            printf("Invalid distance\n");
+            return 0;
+        }
+        printf("%d nearest nodes to point:\n",k);
+        for(int i=0; i < k; i++){
+            printf("%d ",kd[i]->node->numnode);
+        }
+        printf("\n");
+        free(p->coord); 
+        free(p);        
 
-    setcoords(p,values,dim);                                        //Set the coordinates of the point
-    
-    KDistance** kd;
-    if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
-        kd = nndescentpoint(graph,k,stn,*p,euclidean_distance);       
-    }
-    else if(strcmp(dist,"manhattan") == 0) {
-        kd =nndescentpoint(graph,k,stn,*p,manhattan_distance);    
-    }
-    else if(strcmp(dist,"chebysev") == 0) {
-        kd = nndescentpoint(graph,k,stn,*p,chebyshev_distance);    
-    }
-    else{
-        printf("Invalid distance\n");
-        return 0;
-    }
-    printf("%d nearest nodes to point:\n",k);
-    for(int i=0; i < k; i++){
-        printf("%d ",kd[i]->node->numnode);
-    }
-    printf("\n");
+        free(values);  
+        for(int i=0; i<k; i++){
+            free(kd[i]);
+        }
+        free(kd);
+        fclose(file);
 
-
-    // Graph implementation NN Descent 
-    printf("\nGraph implementation of NN Descent:\n");
-    if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
-        nndescent(graph,k,euclidean_distance);    
+    }else if (strcmp(mode,"graph")==0){
+        // Graph implementation NN Descent 
+        printf("\nGraph implementation of NN Descent:\n");
+        if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
+            nndescent(graph,k,euclidean_distance);    
+        }
+        else if(strcmp(dist,"manhattan") == 0) {
+            nndescent(graph,k,manhattan_distance);    
+        }
+        else if(strcmp(dist,"chebysev") == 0) {
+            nndescent(graph,k,chebyshev_distance);    
+        }
+        else{
+            printf("Invalid distance\n");
+            return 0;
+        }
+        printf("Final KNN Graph:\n");
+        
+        printNeighbors(graph);
     }
-    else if(strcmp(dist,"manhattan") == 0) {
-        nndescent(graph,k,manhattan_distance);    
-    }
-    else if(strcmp(dist,"chebysev") == 0) {
-        nndescent(graph,k,chebyshev_distance);    
-    }
-    else{
-        printf("Invalid distance\n");
-        return 0;
-    }
-    printf("Final KNN Graph:\n");
-    
-    printNeighbors(graph);
-
-    free(p->coord); 
-    free(p);        
-
-    free(values);  
-    for(int i=0; i<k; i++){
-        free(kd[i]);
-    }
-    free(kd);
-    fclose(file);
     
 
     for(int i=0; i<numnodes; i++){
