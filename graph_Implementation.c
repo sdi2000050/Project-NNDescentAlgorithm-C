@@ -101,6 +101,7 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     }
 
     *numnodes = num_points;
+    fclose(file);
     return nodes;
 }
 
@@ -182,6 +183,7 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
         graph->nodes[destIndex] = dest;
     }
 
+
     return 0;
 }
 
@@ -204,6 +206,8 @@ void printNeighbors(Graph* graph) {
             rneighborNode = rneighborNode->nextnode;
         }
         printf("\n");
+        free(kneighborNode);
+        free(rneighborNode);
     }
 }
 
