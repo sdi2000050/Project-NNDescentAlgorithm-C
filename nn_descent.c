@@ -40,7 +40,7 @@ void nndescent(Graph* graph, int k, float (*distance_value)(point, point)){
             ListNode* currentneighbor = connectlist(currentnode->kneighbors,currentnode->rneighbors);
             KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));     // Check the neighbors and reverse neighbors of it's one neighbors
             ListNode* curr = currentnode->kneighbors;
-            for(int m=0; m<k; m++){
+            for(int m=0; m < k; m++){
                 kd[m]=(KDistance*)malloc(sizeof(KDistance));                    // Initialize the array to keep the k nearest nodes
                 kd[m]->node = curr->node;
                 kd[m]->dis = distance_value(*(currentnode->data),*(curr->node->data));
