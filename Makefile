@@ -20,6 +20,12 @@ nn_descent.o: nn_descent.c
 distances.o: distances.c
 	gcc -c distances.c -o distances.o
 
+test_results : test_results.o graph_Implementation.o nn_descent.o distances.o
+	gcc graph_Implementation.o nn_descent.o distances.o test_results.o -o test_results -lm 
+
+test_results.o : test_results.c 
+	gcc -c test_results.c -o test_results.o 
+
 test : test.o graph_Implementation.o nn_descent.o distances.o
 	gcc graph_Implementation.o nn_descent.o distances.o test.o -o test -lm 
 
@@ -29,3 +35,4 @@ test.o : test.c
 clean:
 	rm -f *.o *.a graph_main
 	rm -f *.o test
+	rm -f *.o test_results

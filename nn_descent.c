@@ -66,7 +66,7 @@ void nndescent(Graph* graph, int k, float (*distance_value)(point, point)){
                     
                     
                 }
-                currentneighbor = currentneighbor->nextnode;                    
+                currentneighbor = currentneighbor->nextnode; 
             }
             free(currentneighbor);
             free(curr);
@@ -108,17 +108,17 @@ void updateneighbors(Graph* graph, int node) {
     }
 }
 
+int compareKDistance(const void* a, const void* b) {
+    float disA = (*(KDistance**)a)->dis;
+    float disB = (*(KDistance**)b)->dis;
+
+    if (disA < disB) return -1;
+    if (disA > disB) return 1;
+    return 0;
+}
 
 void sort(KDistance** kd, int k) {
-    for (int i = 0; i < k - 1; ++i) {
-        for (int j = 0; j < k - i - 1; ++j) {                               // Asceding sorting based on distance
-            if (kd[j]->dis > kd[j + 1]->dis) {
-                KDistance* temp = kd[j];
-                kd[j] = kd[j + 1];
-                kd[j + 1] = temp;
-            }
-        }
-    }
+    qsort(kd, k, sizeof(KDistance*), compareKDistance);
 }
 
 int notinarray(int numnode, KDistance** kd, int k){

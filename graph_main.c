@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     Distancefunc dis;                                       
     if (strcmp(mode,"point")==0){
         // Point implementation of NN Descent   
-        printf("\nPoint implementation of NN Descent:\n"); 
+        printf("\nPoint implementation:\n"); 
         point* p = malloc(sizeof(point));
         FILE* file = fopen(input_point,"rb");                       // Get the coordinates of the point from the file
         if (file == NULL) {
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 
     }else if (strcmp(mode,"graph")==0){
         // Graph implementation NN Descent 
-        printf("\nGraph implementation of NN Descent:\n");
+        printf("\nGraph implementation:\n");
         if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
             nndescent(graph,k,euclidean_distance);    
         }

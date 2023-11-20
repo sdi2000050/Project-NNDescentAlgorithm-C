@@ -198,7 +198,7 @@ void printNeighbors(Graph* graph) {
             kneighborNode = kneighborNode->nextnode;
         }
         printf("\n");
-
+    
         printf("Node %d rneighbors: ", currentNode->numnode);
         ListNode* rneighborNode = currentNode->rneighbors;
         while (rneighborNode != NULL) {
