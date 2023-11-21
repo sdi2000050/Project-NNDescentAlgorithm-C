@@ -38,6 +38,7 @@ Node* create_node(int n, ListNode* kn, ListNode* rn, point* p) {
     node->data = p;
     node->kneighbors = kn;
     node->rneighbors = rn;
+    node->ljarray = NULL;
     return node;
 }
 
@@ -211,3 +212,10 @@ void printNeighbors(Graph* graph) {
     }
 }
 
+void initialize_arrays(Node* node, int size) {
+    node->ljarray = (Ljnode*)malloc(size * sizeof(Ljnode));
+
+    for(int i = 0; i < size; i++) {
+        node->ljarray[i].neighbor_dist = (KDistance*)malloc((size - 1) * sizeof(KDistance));
+    }
+}

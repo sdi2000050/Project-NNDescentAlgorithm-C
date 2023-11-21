@@ -33,3 +33,4 @@ void checkneighbors(Node* node, ListNode* neighbors, KDistance** kd, int k, Dist
 void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, Distancefunc distance_value);
 int exist(int numnode, ListNode* list);
 ListNode* connectlist(ListNode* a, ListNode* b);
+void initialize_arrays(Node* node, int size);

@@ -1,3 +1,4 @@
+#include <stdbool.h>
 
 typedef struct {
     float *coord;
@@ -8,16 +9,23 @@ typedef float (*Distancefunc)(point, point);
 
 typedef struct ListNode ListNode;
 
+typedef struct ljnode {
+    int numnode;
+    KDistance* neighbor_dist;
+} Ljnode;
+
 typedef struct Node {
     int numnode;
     point* data;
     ListNode* kneighbors;
     ListNode* rneighbors;
+    Ljnode* ljarray; 
 } Node;
 
 typedef struct ListNode {
     Node* node;
     ListNode* nextnode;
+    bool flag;
 } ListNode;
 
 typedef struct Graph {
@@ -26,6 +34,6 @@ typedef struct Graph {
 } Graph;
 
 typedef struct kdistances{
-    Node* node;
+    Node* node;             //Μπορει να γινει μονο Numnode!!!
     float dis;
-}KDistance;
+} KDistance;
