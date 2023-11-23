@@ -13,8 +13,8 @@ int list_size(ListNode* list);
 
 //**********Graph**********
 Graph* createGraph(int numnodes);
-void createRandomGraph(Graph* graph, Node** nodes, int k);
-int addEdge(Graph* graph, Node* src, Node* dest);
+void createRandomGraph(Graph* graph, Node** nodes, int k, Distancefunc distance_value);
+int addEdge(Graph* graph, int k, Node* src, Node* dest, Distancefunc distance_value);
 void printNeighbors(Graph* graph);
 
 //**********Distances**********

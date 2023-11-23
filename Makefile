@@ -5,8 +5,8 @@ all: graph_main
 graph_main: graph_main.o $(LIBRARY_NAME)
 	gcc graph_main.o -L. -lgraph -o graph_main -lm
 
-$(LIBRARY_NAME): graph_Implementation.o nn_descent.o distances.o
-	ar rcs $(LIBRARY_NAME) graph_Implementation.o nn_descent.o distances.o
+$(LIBRARY_NAME): graph_Implementation.o nndescent_lj.o distances.o
+	ar rcs $(LIBRARY_NAME) graph_Implementation.o nndescent_lj.o distances.o
 
 graph_main.o: graph_main.c  
 	gcc -c graph_main.c -o graph_main.o 
@@ -14,8 +14,11 @@ graph_main.o: graph_main.c
 graph_Implementation.o: graph_Implementation.c 
 	gcc -c graph_Implementation.c -o graph_Implementation.o 
 
-nn_descent.o: nn_descent.c
-	gcc -c nn_descent.c -o nn_descent.o
+nndescent_lj: nndescent_lj.o distances.o graph_Implementation.o
+	gcc nndescent_lj.o distances.o graph_Implementation.o -o nndescent_lj -lm
+
+nndescent_lj.o: nndescent_lj.c
+	gcc -c nndescent_lj.c -o nndescent_lj.o
 
 distances.o: distances.c
 	gcc -c distances.c -o distances.o
