@@ -37,17 +37,16 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
             }
         }
 
-        for(int i=0; i<numofnodes; i++){
-
+        for(int i = 0; i < numofnodes; i++){
             int count=0;
-            for(int l=0; l<k; l++){                                         // Check if the results of our search are different from the already k neighbors of our node
+            for(int l = 0; l < k; l++) {                                         // Check if the results of our search are different from the already k neighbors of our node
                 if (exist(graph->nodes[i]->ljarray[l]->node->numnode,graph->nodes[i]->kneighbors) == 1){
                     count++;
                 }else{
                     break;
                 }
             }
-            if (count != k){                                                     // If they are update the graph 
+            if (count != k) {                                                     // If they are update the graph 
                 graph->nodes[i]->kneighbors = NULL;                             // Delete the current k neighbors
                 updateneighbors(graph,graph->nodes[i]->numnode);                // Delete this node from it's current reverse neighbors 
                 for(int j=0; j<k; j++){
@@ -82,7 +81,6 @@ void deletenode(ListNode** list, int node) {
     prev->nextnode = curr->nextnode;
     free(curr);
 }
-
 
 
 void updateneighbors(Graph* graph, int node) {
@@ -142,7 +140,6 @@ ListNode* connectlist(ListNode* a, ListNode* b){
                 currc->nextnode = newnode;
                 currc = newnode;
             }
-
         }    
         a = a->nextnode;
     }
