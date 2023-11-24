@@ -32,13 +32,13 @@ int list_size(ListNode* list) {
     return count;
 }
 
-Node* create_node(int n, ListNode* kn, ListNode* rn, point* p) {
+Node* create_node(int n, ListNode* kn, ListNode* rn, KDistance** lj, point* p) {
     Node* node = (Node*) malloc(sizeof(Node));
     node->numnode = n;                                              
     node->data = p;
     node->kneighbors = kn;
     node->rneighbors = rn;
-    node->ljarray = NULL;
+    node->ljarray = lj;
     return node;
 }
 
@@ -98,7 +98,7 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     }
 
     for (int i = 0; i < num_points; i++) {
-        nodes[i] = create_node(i, NULL, NULL, &points[i]);
+        nodes[i] = create_node(i, NULL, NULL, NULL,&points[i]);
     }
 
     *numnodes = num_points;
@@ -106,7 +106,7 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     return nodes;
 }
 
-void createRandomGraph(Graph* graph, Node** nodes, int k, Distancefunc distance_value) {
+void createRandomGraph(Graph* graph, Node** nodes, int k) {
     srand(time(NULL));
     int numnodes = graph->numnodes;
     int exit;
@@ -115,7 +115,7 @@ void createRandomGraph(Graph* graph, Node** nodes, int k, Distancefunc distance_
         while (count < k) {
             int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
             if (randomNeighbor != i) {
-                exit = addEdge(graph,k,nodes[i], nodes[randomNeighbor],distance_value);
+                exit = addEdge(graph,nodes[i], nodes[randomNeighbor]);
                 if (exit == 0){                                             // Check if a new edge was created    
                     count++;
                 }
@@ -124,7 +124,7 @@ void createRandomGraph(Graph* graph, Node** nodes, int k, Distancefunc distance_
     }
 }
 
-int addEdge(Graph* graph, int k, Node* src, Node* dest, Distancefunc distance_value) {
+int addEdge(Graph* graph, Node* src, Node* dest) {
     
     ListNode* destNode = (ListNode*)malloc(sizeof(ListNode));               // Create a new list node for destination node
     destNode->node = dest;
@@ -192,7 +192,7 @@ int addEdge(Graph* graph, int k, Node* src, Node* dest, Distancefunc distance_va
 void printNeighbors(Graph* graph) {
     for (int i = 0; i < graph->numnodes; ++i) {
         Node* currentNode = graph->nodes[i];
-        printf("Node %d kneighbors: ", currentNode->numnode);
+        //printf("Node %d kneighbors: ", currentNode->numnode);
         ListNode* kneighborNode = currentNode->kneighbors;
         while (kneighborNode != NULL) {
             printf("%d ", kneighborNode->node->numnode);
@@ -200,22 +200,28 @@ void printNeighbors(Graph* graph) {
         }
         printf("\n");
     
-        printf("Node %d rneighbors: ", currentNode->numnode);
+       /* printf("Node %d rneighbors: ", currentNode->numnode);
         ListNode* rneighborNode = currentNode->rneighbors;
         while (rneighborNode != NULL) {
             printf("%d ", rneighborNode->node->numnode);
             rneighborNode = rneighborNode->nextnode;
         }
-        printf("\n");
+        printf("\n");*/
         free(kneighborNode);
-        free(rneighborNode);
+        //free(rneighborNode);
     }
 }
 
-void initialize_arrays(Node* node, int size) {
-    node->ljarray = (Ljnode*)malloc(size * sizeof(Ljnode));
-
-    for(int i = 0; i < size; i++) {
-        node->ljarray[i].neighbor_dist = (KDistance*)malloc((size - 1) * sizeof(KDistance));
+void initialize_arrays(Graph* g, int k,float (distance_value)(point, point)) {
+    for(int i=0; i<g->numnodes; i++){
+        g->nodes[i]->ljarray = (KDistance**) malloc (k * sizeof(KDistance*));     
+        ListNode* curr = g->nodes[i]->kneighbors;
+        for(int m=0; m < k; m++){
+            g->nodes[i]->ljarray[m] = (KDistance*) malloc (sizeof(KDistance));
+            g->nodes[i]->ljarray[m]->node = curr->node;
+            g->nodes[i]->ljarray[m]->dis = distance_value(*(g->nodes[i]->data),*(curr->node->data));
+            curr=curr->nextnode;
+        }
+        sort(g->nodes[i]->ljarray,k);
     }
 }

@@ -10,17 +10,12 @@ typedef float (*Distancefunc)(point, point);
 typedef struct ListNode ListNode;
 typedef struct kdistances KDistance;
 
-typedef struct ljnode {
-    int numnode;
-    KDistance* neighbor_dist;
-} Ljnode;
-
 typedef struct Node {
     int numnode;
     point* data;
     ListNode* kneighbors;
     ListNode* rneighbors;
-    Ljnode* ljarray; 
+    KDistance** ljarray; 
 } Node;
 
 typedef struct ListNode {
@@ -35,6 +30,6 @@ typedef struct Graph {
 } Graph;
 
 typedef struct kdistances{
-    int node;             //Μπορει να γινει μονο Numnode!!!
+    Node* node;             //Μπορει να γινει μονο Numnode!!!
     float dis;
 } KDistance;

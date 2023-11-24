@@ -39,12 +39,13 @@ int main(int argc, char *argv[]) {
     
 
     createRandomGraph (graph,nodes,k);                      // And create a random graph
-    printf("Initial Graph:\n");
-    printNeighbors(graph);
-    printf("\n");
+    //printf("Initial Graph:\n");
+
+    //printNeighbors(graph);
+    //printf("\n");
 
     Distancefunc dis;                                       
-    if (strcmp(mode,"point")==0){
+    /*if (strcmp(mode,"point")==0){
         // Point implementation of NN Descent   
         printf("\nPoint implementation:\n"); 
         point* p = malloc(sizeof(point));
@@ -102,23 +103,26 @@ int main(int argc, char *argv[]) {
         free(kd);
         fclose(file);
 
-    }else if (strcmp(mode,"graph")==0){
+    }else */if (strcmp(mode,"graph")==0){
         // Graph implementation NN Descent 
-        printf("\nGraph implementation:\n");
+        //printf("\nGraph implementation:\n");
         if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
-            nndescent(graph,k,euclidean_distance);    
+            initialize_arrays(graph,k,euclidean_distance);
+            local_join(graph,k,euclidean_distance);    
         }
         else if(strcmp(dist,"manhattan") == 0) {
-            nndescent(graph,k,manhattan_distance);    
+            initialize_arrays(graph,k,manhattan_distance);    
+            local_join(graph,k,manhattan_distance);
         }
         else if(strcmp(dist,"chebysev") == 0) {
-            nndescent(graph,k,chebyshev_distance);    
+            initialize_arrays(graph,k,chebyshev_distance);    
+            local_join(graph,k,chebyshev_distance);
         }
         else{
             printf("Invalid distance\n");
             return 0;
         }
-        printf("Final KNN Graph:\n");
+        //printf("Final KNN Graph:\n");
         
         printNeighbors(graph);
     }
