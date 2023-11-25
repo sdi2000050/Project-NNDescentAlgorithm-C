@@ -14,9 +14,6 @@ graph_main.o: graph_main.c
 graph_Implementation.o: graph_Implementation.c 
 	gcc -c graph_Implementation.c -o graph_Implementation.o 
 
-nndescent_lj: nndescent_lj.o distances.o graph_Implementation.o
-	gcc nndescent_lj.o distances.o graph_Implementation.o -o nndescent_lj -lm
-
 nndescent_lj.o: nndescent_lj.c
 	gcc -c nndescent_lj.c -o nndescent_lj.o
 
