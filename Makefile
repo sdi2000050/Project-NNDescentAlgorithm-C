@@ -27,7 +27,7 @@ test_results.o : test_results.c
 	gcc -c test_results.c -o test_results.o 
 
 test : test.o graph_Implementation.o nndescent_lj.o distances.o
-	gcc graph_Implementation.o nn_descent.o distances.o test.o -o test -lm 
+	gcc graph_Implementation.o nndescent_lj.o distances.o test.o -o test -lm 
 
 test.o : test.c 
 	gcc -c test.c -o test.o 
