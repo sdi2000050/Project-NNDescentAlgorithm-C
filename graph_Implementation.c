@@ -111,6 +111,7 @@ void createRandomGraph(Graph* graph, Node** nodes, int k) {
     int numnodes = graph->numnodes;
     int exit;
     for (int i = 0; i < numnodes; ++i) {
+        nodes[i]->flag = true;
         int count = 0;
         while (count < k) {
             int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
@@ -129,6 +130,8 @@ int addEdge(Graph* graph, Node* src, Node* dest) {
     ListNode* destNode = (ListNode*)malloc(sizeof(ListNode));               // Create a new list node for destination node
     destNode->node = dest;
     destNode->nextnode = NULL;
+
+    dest->flag = true;
 
     if (src->kneighbors != NULL){                                           // Check if there is already an edge from source to destination
         ListNode* curr = src->kneighbors;
