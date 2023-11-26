@@ -25,7 +25,7 @@ void test_createNode() {
 	point* p = (point*) malloc(sizeof(point));
 	setcoords(p, coor, 2);
 
-	Node* node = create_node(0, NULL, NULL, p);
+	Node* node = create_node(0, NULL, NULL, NULL, p);
 
 	TEST_ASSERT(node != NULL);
 	TEST_ASSERT(node->data->coord[0] == coor[0] && node->data->coord[1] == coor[1]);
@@ -51,19 +51,19 @@ void test_graph_addedge(void) {
 
 	point* p0 = (point*) malloc(sizeof(point));
 	setcoords(p0, data[0], 3);
-	Node* n0 = create_node(0, NULL, NULL, p0);
+	Node* n0 = create_node(0, NULL, NULL, NULL, p0);
 
 	point* p1 = (point*) malloc(sizeof(point));
 	setcoords(p1, data[1], 3);
-	Node* n1 = create_node(1, NULL, NULL, p1);
+	Node* n1 = create_node(1, NULL, NULL, NULL, p1);
 
 	point* p2 = (point*) malloc(sizeof(point));
 	setcoords(p2, data[2], 3);
-	Node* n2 = create_node(2, NULL, NULL, p2);
+	Node* n2 = create_node(2, NULL, NULL, NULL, p2);
 
 	point* p3 = (point*) malloc(sizeof(point));
 	setcoords(p3, data[3], 3);
-	Node* n3 = create_node(3, NULL, NULL, p3);
+	Node* n3 = create_node(3, NULL, NULL, NULL, p3);
 
 	addEdge(graph, n0, n1);
 	addEdge(graph, n1, n2);
@@ -95,11 +95,11 @@ void test_listsize() {
 
 	for(int i = 0; i < size; i++) {
 		if(i == 0) {
-			list->node = create_node(i, NULL, NULL, NULL);
+			list->node = create_node(i, NULL, NULL, NULL, NULL);
 		}
 		else {
 			list->nextnode = (ListNode*) malloc(sizeof(ListNode));
-			list->nextnode->node = create_node(i, NULL, NULL, NULL);
+			list->nextnode->node = create_node(i, NULL, NULL, NULL, NULL);
 			list = list->nextnode;
 		}
 	}
@@ -125,9 +125,9 @@ void test_exist() {
 	ListNode* b = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* c = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n0 = create_node(0, NULL, NULL, NULL);
-	Node* n1 = create_node(1, NULL, NULL, NULL);
-	Node* n2 = create_node(2, NULL, NULL, NULL);
+	Node* n0 = create_node(0, NULL, NULL, NULL, NULL);
+	Node* n1 = create_node(1, NULL, NULL, NULL, NULL);
+	Node* n2 = create_node(2, NULL, NULL, NULL, NULL);
 
 	a->node = n0;
 	b->node = n1;
@@ -158,9 +158,9 @@ void test_connectlist() {
 	ListNode* b = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* c = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n0 = create_node(0, NULL, NULL, NULL);
-	Node* n1 = create_node(1, NULL, NULL, NULL);
-	Node* n2 = create_node(2, NULL, NULL, NULL);
+	Node* n0 = create_node(0, NULL, NULL, NULL, NULL);
+	Node* n1 = create_node(1, NULL, NULL, NULL, NULL);
+	Node* n2 = create_node(2, NULL, NULL, NULL, NULL);
 
 	a->node = n0;
 	b->node = n1;
@@ -174,9 +174,9 @@ void test_connectlist() {
 	ListNode* e = (ListNode*) malloc(sizeof(ListNode));
 	ListNode* f = (ListNode*) malloc(sizeof(ListNode));
 
-	Node* n4 = create_node(0, NULL, NULL, NULL);
-	Node* n5 = create_node(5, NULL, NULL, NULL);
-	Node* n6 = create_node(6, NULL, NULL, NULL);
+	Node* n4 = create_node(0, NULL, NULL, NULL, NULL);
+	Node* n5 = create_node(5, NULL, NULL, NULL, NULL);
+	Node* n6 = create_node(6, NULL, NULL, NULL, NULL);
 
 	d->node = n4;
 	e->node = n5;
@@ -212,11 +212,11 @@ void test_deletenode() {
 
 	for(int i = 0; i < size; i++) {
 		if(i == 0) {
-			list->node = create_node(i, NULL, NULL, NULL);
+			list->node = create_node(i, NULL, NULL, NULL, NULL);
 		}
 		else {
 			list->nextnode = (ListNode*) malloc(sizeof(ListNode));
-			list->nextnode->node = create_node(i, NULL, NULL, NULL);
+			list->nextnode->node = create_node(i, NULL, NULL, NULL, NULL);
 			list = list->nextnode;
 		}
 	}
@@ -255,7 +255,7 @@ void test_notinarray() {
 	KDistance** kd = (KDistance**) malloc (size * sizeof(KDistance*));
 	for(int i = 0; i < size; i++) {
 		kd[i] = (KDistance*)malloc(sizeof(KDistance));
-		kd[i]->node = create_node(i, NULL, NULL, NULL);
+		kd[i]->node = create_node(i, NULL, NULL, NULL, NULL);
 	}
 
 	for(int i = 0; i < size; i++) {
