@@ -25,16 +25,28 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                         continue;
                     }
                     float dis = distance_value(*(currentnode->data),*(currentneighbors->node->data));
+
                     if(dis < currentnode->ljarray[k-1]->dis && notinarray(currentneighbors->node->numnode,currentnode->ljarray,k)) {
                         currentnode->ljarray[k-1]->node = currentneighbors->node;
                         currentnode->ljarray[k-1]->dis = dis;
+                        currentneighbors->node->flag == true;
+                        currentnode->flag == true;
                         sort(currentnode->ljarray, k);
+                    }
+                    else {
+                        currentneighbors->node->flag == false;
                     }
                     if(dis < currentneighbors->node->ljarray[k-1]->dis && notinarray(currentnode->numnode,currentneighbors->node->ljarray,k)) {
                         currentneighbors->node->ljarray[k-1]->node = currentnode;
                         currentneighbors->node->ljarray[k-1]->dis = dis;
+                        currentneighbors->node->flag == true;
+                        currentnode->flag == true;
                         sort(currentneighbors->node->ljarray, k);
                     }
+                    else {
+                        currentnode->flag == false;
+                    }
+
                     currentneighbors = currentneighbors->nextnode;
                 }
                 neighbors = neighbors->nextnode;

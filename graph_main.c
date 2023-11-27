@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     createRandomGraph (graph,nodes,k);                      // And create a random graph
     printf("Initial Graph:\n");
 
-    printNeighbors(graph);
+    //printNeighbors(graph);
     printf("\n");
 
     Distancefunc dis;                                       
