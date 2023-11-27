@@ -7,8 +7,11 @@
 void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
     int update = 1;
     int numofnodes = graph->numnodes;
+    double d = 0.001;
+    int updatecounts=numofnodes;
 
-    while(update) {
+    while(update && updatecounts > (numofnodes*k*d) ) {
+        updatecounts=0;
         update = 0;
         for(int i = 0; i < numofnodes; i++) {
             Node* rednode = graph->nodes[i];
@@ -69,6 +72,7 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                     addEdge(graph,graph->nodes[i],graph->nodes[i]->ljarray[j]->node);                 // Make the new edges between the k nearest nodes in array
                 }
                 update = 1;
+                updatecounts++;
             }
         }
     }

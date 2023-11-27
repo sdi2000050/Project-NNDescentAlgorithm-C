@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid distance\n");
             return 0;
         }
-        //printf("Final KNN Graph:\n");
+        printf("Final KNN Graph:\n");
         
         printNeighbors(graph);
     }
