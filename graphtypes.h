@@ -12,7 +12,7 @@ typedef struct kdistances KDistance;
 
 typedef struct Node {
     int numnode;
-    bool flag;
+    //bool flag;
     point* data;
     ListNode* kneighbors;
     ListNode* rneighbors;
@@ -22,7 +22,7 @@ typedef struct Node {
 typedef struct ListNode {
     Node* node;
     ListNode* nextnode;
-    //bool flag;
+    bool flag;
 } ListNode;
 
 typedef struct Graph {
@@ -30,7 +30,8 @@ typedef struct Graph {
     Node** nodes;
 } Graph;
 
-typedef struct kdistances{
+typedef struct kdistances {
     Node* node;             //Μπορει να γινει μονο Numnode!!!
     float dis;
+    bool flag;
 } KDistance;

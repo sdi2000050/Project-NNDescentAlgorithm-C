@@ -23,7 +23,7 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                 ListNode* currentneighbors = neighbors->nextnode;
 
                 while(currentneighbors != NULL) {
-                    if(currentnode->flag == false && currentneighbors->node->flag == false) {
+                    if(neighbors->flag == false && currentneighbors->flag == false) {
                         currentneighbors = currentneighbors->nextnode;
                         continue;
                     }
@@ -32,22 +32,12 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                     if(dis < currentnode->ljarray[k-1]->dis && notinarray(currentneighbors->node->numnode,currentnode->ljarray,k)) {
                         currentnode->ljarray[k-1]->node = currentneighbors->node;
                         currentnode->ljarray[k-1]->dis = dis;
-                        currentneighbors->node->flag == true;
-                        currentnode->flag == true;
                         sort(currentnode->ljarray, k);
-                    }
-                    else {
-                        currentneighbors->node->flag == false;
                     }
                     if(dis < currentneighbors->node->ljarray[k-1]->dis && notinarray(currentnode->numnode,currentneighbors->node->ljarray,k)) {
                         currentneighbors->node->ljarray[k-1]->node = currentnode;
                         currentneighbors->node->ljarray[k-1]->dis = dis;
-                        currentneighbors->node->flag == true;
-                        currentnode->flag == true;
                         sort(currentneighbors->node->ljarray, k);
-                    }
-                    else {
-                        currentnode->flag == false;
                     }
 
                     currentneighbors = currentneighbors->nextnode;
@@ -56,20 +46,22 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
             }
         }
 
-        for(int i = 0; i < numofnodes; i++){
+        for(int i = 0; i < numofnodes; i++) {
             int count=0;
             for(int l = 0; l < k; l++) {                                         // Check if the results of our search are different from the already k neighbors of our node
-                if (exist(graph->nodes[i]->ljarray[l]->node->numnode,graph->nodes[i]->kneighbors) == 1){
+                if (exist(graph->nodes[i]->ljarray[l]->node->numnode,graph->nodes[i]->kneighbors) == 1) {   //Node is already in k neighbors so it participate in local join
                     count++;
-                }else{
-                    break;
+                    graph->nodes[i]->ljarray[l]->flag = false;
+                } 
+                else {
+                    graph->nodes[i]->ljarray[l]->flag = true;
                 }
             }
-            if (count != k) {                                                     // If they are update the graph 
-                graph->nodes[i]->kneighbors = NULL;                             // Delete the current k neighbors
-                updateneighbors(graph,graph->nodes[i]->numnode);                // Delete this node from it's current reverse neighbors 
-                for(int j=0; j<k; j++){
-                    addEdge(graph,graph->nodes[i],graph->nodes[i]->ljarray[j]->node);                 // Make the new edges between the k nearest nodes in array
+            if (count != k) {                                                    // If they are update the graph
+                graph->nodes[i]->kneighbors = NULL;                              // Delete the current k neighbors
+                updateneighbors(graph,graph->nodes[i]->numnode);                 // Delete this node from it's current reverse neighbors
+                for(int j = 0; j < k; j++){
+                    addEdge(graph,graph->nodes[i],graph->nodes[i]->ljarray[j]->node, graph->nodes[i]->ljarray[j]->flag);                 // Make the new edges between the k nearest nodes in array
                 }
                 update = 1;
                 updatecounts++;
@@ -151,6 +143,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
         if(exist(a->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
             newnode->node = create_node(a->node->numnode,a->node->kneighbors,a->node->rneighbors,a->node->ljarray,a->node->data);
+            newnode->flag = a->flag;
             newnode->nextnode = NULL;    
 
             if( c == NULL){
@@ -168,6 +161,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
         if(exist(b->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
             newnode->node = create_node(b->node->numnode,b->node->kneighbors,b->node->rneighbors,b->node->ljarray,b->node->data);
+            newnode->flag = b->flag;
             newnode->nextnode = NULL;    
 
             if( c == NULL){

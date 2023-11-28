@@ -14,7 +14,7 @@ int list_size(ListNode* list);
 //**********Graph**********
 Graph* createGraph(int numnodes);
 void createRandomGraph(Graph* graph, Node** nodes, int k);
-int addEdge(Graph* graph, Node* src, Node* dest);
+int addEdge(Graph* graph, Node* src, Node* dest, bool flag);
 void printNeighbors(Graph* graph);
 void initialize_arrays(Graph* g, int k, float (distance_value)(point, point));
 
