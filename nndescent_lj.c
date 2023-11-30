@@ -8,25 +8,49 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
     int update = 1;
     int numofnodes = graph->numnodes;
     double d = 0.001;
+    double p = 0.5;
     int updatecounts=numofnodes;
 
     while(update && updatecounts > (numofnodes*k*d) ) {
         updatecounts=0;
         update = 0;
+        ListNode** new = (ListNode**) malloc(numofnodes * sizeof(ListNode*));
+        ListNode** old = (ListNode**) malloc(numofnodes * sizeof(ListNode*));
+        for(int i=0; i<numofnodes; i++){
+            new[i] = (ListNode*) malloc (sizeof(ListNode));
+            old[i] = (ListNode*) malloc (sizeof(ListNode));
+        }
+
         for(int i = 0; i < numofnodes; i++) {
             Node* rednode = graph->nodes[i];
-            ListNode* neighbors = connectlist(rednode->kneighbors, rednode->rneighbors);
-            int numofneighbors = list_size(neighbors);
 
-            for(int j = 0; j < numofneighbors; j++) {
+            ListNode* new_kneighbors = true_neighbors(rednode->kneighbors);         // Sample kneighbors
+            ListNode* old_kneighbors = false_neighbors(rednode->kneighbors);
+            int pk = p * k;
+            ListNode* new_pk = getpk(pk,new_kneighbors);
+
+            ListNode* new_rneighbors = true_neighbors(rednode->rneighbors);         // Sample rneighbors
+            ListNode* old_rneighbors = false_neighbors(rednode->rneighbors);
+            ListNode* new_pr = getpk(pk,new_rneighbors);
+
+            new[i] = connectlist(new_pk,new_pr);
+            old[i] = connectlist(old_kneighbors,old_rneighbors);
+        }
+
+        for(int i=0; i<numofnodes; i++){
+
+            ListNode* neighbors = connectlist(new[i],old[i]);
+
+            int num = list_size(new[i]);
+            for(int j = 0; j < num; j++) {
                 Node* currentnode = neighbors->node;
                 ListNode* currentneighbors = neighbors->nextnode;
 
                 while(currentneighbors != NULL) {
-                    if(neighbors->flag == false && currentneighbors->flag == false) {
+                    /*if(neighbors->flag == false && currentneighbors->flag == false) {
                         currentneighbors = currentneighbors->nextnode;
                         continue;
-                    }
+                    }*/
                     float dis = distance_value(*(currentnode->data),*(currentneighbors->node->data));
 
                     if(dis < currentnode->ljarray[k-1]->dis && notinarray(currentneighbors->node->numnode,currentnode->ljarray,k)) {
@@ -176,4 +200,60 @@ ListNode* connectlist(ListNode* a, ListNode* b){
     }
 
     return c;
+}
+
+
+ListNode* true_neighbors(ListNode* list){
+    ListNode* curr = list;
+    ListNode* true_n = (ListNode*) malloc (sizeof(ListNode));
+    while(curr != NULL){
+        if(curr->flag == true){
+            if( true_n == NULL){
+                true_n = curr;
+            } else{
+                ListNode* currtrue = true_n;
+                while(currtrue->nextnode != NULL){
+                    currtrue = currtrue->nextnode;
+                }
+                currtrue->nextnode = curr;
+            }
+        }
+        curr = curr->nextnode;
+    }
+    free(curr);
+    return true_n;
+}
+
+ListNode* false_neighbors(ListNode* list){
+    ListNode* curr = list;
+    ListNode* false_n = (ListNode*) malloc (sizeof(ListNode));
+    while(curr != NULL){
+        if(curr->flag == false){
+            if( false_n == NULL){
+                false_n = curr;
+            } else{
+                ListNode* currfalse = false_n;
+                while(currfalse->nextnode != NULL){
+                    currfalse = currfalse->nextnode;
+                }
+                currfalse->nextnode = curr;
+            }
+        }
+        curr = curr->nextnode;
+    }
+    free(curr);
+    return false_n;
+}
+
+ListNode* getpk(int pk, ListNode* list){
+    if(list_size(list) <= pk){
+        return list;
+    }else{
+        ListNode* curr = list;
+        for(int i=0; i<pk; i++){
+            curr = curr ->nextnode;
+        }
+        curr->nextnode = NULL;
+        return list;
+    }
 }

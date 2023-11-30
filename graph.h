@@ -35,3 +35,6 @@ void checkneighbors(Node* node, KDistance* neighbors, int size, KDistance** kd, 
 void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, Distancefunc distance_value);
 int exist(int numnode, ListNode* list);
 ListNode* connectlist(ListNode* a, ListNode* b);
+ListNode* true_neighbors(ListNode* list);
+ListNode* false_neighbors(ListNode* list);
+ListNode* getpk(int pk, ListNode* list);
