@@ -12,11 +12,13 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
     int updatecounts=numofnodes;
 
     while(update && updatecounts > (numofnodes*k*d) ) {
+        printf("skato");
         updatecounts=0;
         update = 0;
         ListNode** new = (ListNode**) malloc(numofnodes * sizeof(ListNode*));
         ListNode** old = (ListNode**) malloc(numofnodes * sizeof(ListNode*));
         for(int i=0; i<numofnodes; i++){
+            printf("skato");
             new[i] = (ListNode*) malloc (sizeof(ListNode));
             old[i] = (ListNode*) malloc (sizeof(ListNode));
         }
@@ -24,6 +26,7 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
         for(int i = 0; i < numofnodes; i++) {
             Node* rednode = graph->nodes[i];
 
+            printf("skato");
             ListNode* new_kneighbors = true_neighbors(rednode->kneighbors);         // Sample kneighbors
             ListNode* old_kneighbors = false_neighbors(rednode->kneighbors);
             int pk = p * k;
@@ -206,54 +209,59 @@ ListNode* connectlist(ListNode* a, ListNode* b){
 ListNode* true_neighbors(ListNode* list){
     ListNode* curr = list;
     ListNode* true_n = (ListNode*) malloc (sizeof(ListNode));
-    while(curr != NULL){
-        if(curr->flag == true){
+    ListNode* first;
+    while(curr != NULL) {
+        if(curr->flag == true) {
             if( true_n == NULL){
                 true_n = curr;
-            } else{
-                ListNode* currtrue = true_n;
-                while(currtrue->nextnode != NULL){
-                    currtrue = currtrue->nextnode;
-                }
-                currtrue->nextnode = curr;
+                first = curr;
+            } 
+            else {
+                true_n->nextnode = curr;
+                true_n = true_n->nextnode;
             }
         }
         curr = curr->nextnode;
     }
+    true_n = first;
     free(curr);
+    printf("skato");
     return true_n;
 }
 
 ListNode* false_neighbors(ListNode* list){
     ListNode* curr = list;
     ListNode* false_n = (ListNode*) malloc (sizeof(ListNode));
+    ListNode* first;
     while(curr != NULL){
         if(curr->flag == false){
             if( false_n == NULL){
                 false_n = curr;
-            } else{
-                ListNode* currfalse = false_n;
-                while(currfalse->nextnode != NULL){
-                    currfalse = currfalse->nextnode;
-                }
-                currfalse->nextnode = curr;
+                first = curr;
+            } 
+            else{
+                false_n->nextnode = curr;
+                false_n = false_n->nextnode;
             }
         }
         curr = curr->nextnode;
     }
     free(curr);
+    printf("skato");
     return false_n;
 }
 
-ListNode* getpk(int pk, ListNode* list){
+ListNode* getpk(int pk, ListNode* list) {
     if(list_size(list) <= pk){
         return list;
-    }else{
+    }
+    else {
         ListNode* curr = list;
-        for(int i=0; i<pk; i++){
+        for(int i = 0; i < pk; i++) {
             curr = curr ->nextnode;
         }
         curr->nextnode = NULL;
+        printf("skato");
         return list;
     }
 }
