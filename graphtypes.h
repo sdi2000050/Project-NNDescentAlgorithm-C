@@ -30,7 +30,7 @@ typedef struct Graph {
 } Graph;
 
 typedef struct kdistances {
-    Node* node;             //Μπορει να γινει μονο Numnode!!!
+    Node* node;             
     float dis;
     bool flag;
 } KDistance;
