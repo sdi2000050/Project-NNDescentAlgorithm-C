@@ -39,10 +39,10 @@ int main(int argc, char *argv[]) {
     
 
     createRandomGraph (graph,nodes,k);                      // And create a random graph
-    printf("Initial Graph:\n");
+    //printf("Initial Graph:\n");
 
     //printNeighbors(graph);
-    printf("\n");
+    //printf("\n");
 
     Distancefunc dis;                                       
     /*if (strcmp(mode,"point")==0){
