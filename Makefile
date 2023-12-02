@@ -1,6 +1,7 @@
 LIBRARY_NAME = libgraph.a
 
-all: graph_main
+all: graph_main\
+	 test
 
 graph_main: graph_main.o $(LIBRARY_NAME)
 	gcc graph_main.o -L. -lgraph -o graph_main -lm
@@ -32,7 +33,6 @@ test : test.o graph_Implementation.o nndescent_lj.o distances.o
 test.o : test.c 
 	gcc -c test.c -o test.o 
 
-# Add the test target
 test_run: test
 	./test
 
