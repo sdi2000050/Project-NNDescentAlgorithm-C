@@ -32,6 +32,10 @@ test : test.o graph_Implementation.o nndescent_lj.o distances.o
 test.o : test.c 
 	gcc -c test.c -o test.o 
 
+# Add the test target
+test_run: test
+	./test
+
 clean:
 	rm -f *.o *.a graph_main
 	rm -f *.o test

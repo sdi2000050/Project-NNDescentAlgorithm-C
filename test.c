@@ -65,9 +65,9 @@ void test_graph_addedge(void) {
 	setcoords(p3, data[3], 3);
 	Node* n3 = create_node(3, NULL, NULL, NULL, p3);
 
-	addEdge(graph, n0, n1);
-	addEdge(graph, n1, n2);
-	addEdge(graph, n1, n3);
+	addEdge(graph, n0, n1, true);
+	addEdge(graph, n1, n2, true);
+	addEdge(graph, n1, n3, true);
 
 	ListNode* l = n0->kneighbors;
 	
@@ -273,6 +273,7 @@ void test_notinarray() {
 }
 
 #define epsilon 1e-6
+
 
 void test_euclidean() {
 	point* a = (point*) malloc(sizeof(point));
