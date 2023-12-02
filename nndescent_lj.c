@@ -47,10 +47,7 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                 ListNode* currentneighbors = neighbors->nextnode;
 
                 while(currentneighbors != NULL) {
-                    /*if(neighbors->flag == false && currentneighbors->flag == false) {
-                        currentneighbors = currentneighbors->nextnode;
-                        continue;
-                    }*/
+
                     float dis = distance_value(*(currentnode->data),*(currentneighbors->node->data));
 
                     if(dis < currentnode->ljarray[k-1]->dis && notinarray(currentneighbors->node->numnode,currentnode->ljarray,k)) {

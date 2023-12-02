@@ -39,10 +39,10 @@ int main(int argc, char *argv[]) {
     
 
     createRandomGraph (graph,nodes,k);                      // And create a random graph
-    //printf("Initial Graph:\n");
+    printf("Initial Graph:\n");
 
-    //printNeighbors(graph);
-    //printf("\n");
+    printNeighbors(graph);
+    printf("\n");
 
     Distancefunc dis;                                       
     /*if (strcmp(mode,"point")==0){
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     }else */if (strcmp(mode,"graph")==0){
         // Graph implementation NN Descent 
-        //printf("\nGraph implementation:\n");
+        printf("\nGraph implementation:\n");
         if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
             initialize_arrays(graph,k,euclidean_distance);
             local_join(graph,k,euclidean_distance);    
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid distance\n");
             return 0;
         }
-        //printf("Final KNN Graph:\n");
+        printf("Final KNN Graph:\n");
         
         printNeighbors(graph);
     }
