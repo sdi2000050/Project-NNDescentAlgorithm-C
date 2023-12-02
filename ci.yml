@@ -1,0 +1,28 @@
+name: C CI
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make
+      working-directory: ${{ github.workspace }}
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest
+      working-directory: ${{ github.workspace }}
