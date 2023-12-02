@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     }else */if (strcmp(mode,"graph")==0){
         // Graph implementation NN Descent 
-        //printf("\nGraph implementation:\n");
+        printf("\nGraph implementation:\n");
         if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
             initialize_arrays(graph,k,euclidean_distance);
             local_join(graph,k,euclidean_distance);    
