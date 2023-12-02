@@ -266,3 +266,44 @@ ListNode* getpk(int pk, ListNode* list) {
         return list;
     }
 }
+
+/*********************Point**********************/
+
+KDistance** nndescentpoint(Graph* graph, int k, int node, point p, float (*distance_value)(point, point)){
+    int numnodes = graph->numnodes;
+    KDistance** kd = (KDistance**) malloc (k * sizeof(KDistance*));
+    ListNode* curr = graph->nodes[node]->kneighbors;                            // Initialize array with k nearest nodes starting from current node
+    for(int m=0; m<k; m++){
+        kd[m]=(KDistance*)malloc(sizeof(KDistance));
+        kd[m]->node = curr->node;
+        kd[m]->dis = distance_value(p,*(curr->node->data));
+        curr=curr->nextnode;
+    }
+    sort(kd,k);                                                                 // Sort array of k nearest nodes
+    for(int i=node; i<numnodes; i++){
+        Node* currentnode = graph->nodes[i];                                    // Connect kneighbors and rneighbors list of current node
+        ListNode* currentneighbor = connectlist(currentnode->kneighbors,currentnode->rneighbors);
+        while(currentneighbor != NULL){
+            ListNode* nneighbors = connectlist(currentneighbor->node->kneighbors,currentneighbor->node->rneighbors);
+            checkneighborspoint(p,nneighbors,kd,k,distance_value);              // Check if the neighbor nodes are nearest to point 
+            currentneighbor = currentneighbor->nextnode;
+        }
+        free(currentneighbor);
+    }
+    free(curr);
+    return kd;
+}
+
+void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, float (*distance_value)(point, point)){
+    ListNode* curr = neighbors;
+    while(curr!=NULL){
+        float dis = distance_value(*(curr->node->data),p);
+        if( kd[k-1]->dis > dis && notinarray(curr->node->numnode,kd,k) == 1){
+            kd[k-1]->node = curr->node;
+            kd[k-1]->dis = dis;
+            sort(kd, k);
+        }
+        curr=curr->nextnode;
+    }
+    free(curr);
+}

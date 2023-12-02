@@ -25,13 +25,11 @@ float chebyshev_distance(point x, point y);
 
 //**********NN Descent**********
 void local_join(Graph* graph, int k, float (distance_value)(point, point));
-//void nndescent(Graph* graph, int k, Distancefunc distance_value);
-//KDistance** nndescentpoint(Graph* graph, int k, int node, point p, Distancefunc distance_value);
+KDistance** nndescentpoint(Graph* graph, int k, int node, point p, Distancefunc distance_value);
 void deletenode(ListNode** list, int node);
 void updateneighbors(Graph* graph, int node);
 int notinarray(int numnode, KDistance** kd, int k);
 void sort(KDistance** kd, int k);
-void checkneighbors(Node* node, KDistance* neighbors, int size, KDistance** kd, int k, Distancefunc distance_value);
 void checkneighborspoint(point p, ListNode* neighbors, KDistance** kd, int k, Distancefunc distance_value);
 int exist(int numnode, ListNode* list);
 ListNode* connectlist(ListNode* a, ListNode* b);
