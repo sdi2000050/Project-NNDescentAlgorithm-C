@@ -181,7 +181,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
     while ( a != NULL){                                             // Connect lists a and b
         if(exist(a->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = a->node;
+            newnode->node = create_node(a->node->numnode,a->node->kneighbors,a->node->rneighbors,a->node->ljarray,a->node->data);
             newnode->flag = a->flag;
             newnode->nextnode = NULL;    
 
@@ -199,7 +199,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
     while ( b != NULL){
         if(exist(b->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = b->node;
+            newnode->node = create_node(b->node->numnode,b->node->kneighbors,b->node->rneighbors,b->node->ljarray,b->node->data);
             newnode->flag = b->flag;
             newnode->nextnode = NULL;    
 
