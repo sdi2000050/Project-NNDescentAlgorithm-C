@@ -131,7 +131,6 @@ int addEdge(Graph* graph, Node* src, Node* dest, bool flag) {
     destNode->flag = flag;
     destNode->nextnode = NULL;
 
-
     if (src->kneighbors != NULL){                                           // Check if there is already an edge from source to destination
         ListNode* curr = src->kneighbors;
         if (curr->node->numnode == dest->numnode) {
@@ -161,6 +160,7 @@ int addEdge(Graph* graph, Node* src, Node* dest, bool flag) {
 
     ListNode* srcNode = (ListNode*)malloc(sizeof(ListNode));                // Create a new list node for source node (reverse neighbor)
     srcNode->node = src;
+    srcNode->flag = flag;
     srcNode->nextnode = NULL;
 
 
@@ -209,6 +209,7 @@ void printNeighbors(Graph* graph) {
             rneighborNode = rneighborNode->nextnode;
         }
         printf("\n");
+
         free(kneighborNode);
         free(rneighborNode);
     }

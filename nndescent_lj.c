@@ -88,6 +88,15 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                 updatecounts++;
             }
         }
+        
+        for(int i = 0; i < numofnodes; i++){
+            free(new[i]);
+            free(old[i]);
+        }
+
+        free(new);
+        free(old);
+
     }
 }
 
@@ -143,7 +152,6 @@ int notinarray(int numnode, KDistance** kd, int k){
     }
     return 1;
 }
-
 
 int exist(int numnode, ListNode* list){
     ListNode* current = list;
@@ -250,7 +258,6 @@ ListNode* false_neighbors(ListNode* list) {
 
     return false_n;
 }
-
 
 ListNode* getpk(int pk, ListNode* list) {
 
