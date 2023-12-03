@@ -36,7 +36,6 @@ int main(int argc, char *argv[]) {
     Node** nodes = getnodes(input_file,&numnodes,dim);      // Get the nodes from the file
 
     Graph* graph = createGraph(numnodes);
-    
 
     createRandomGraph (graph,nodes,k);                      // And create a random graph
     printf("Initial Graph:\n");
