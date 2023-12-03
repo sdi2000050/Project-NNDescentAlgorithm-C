@@ -128,11 +128,6 @@ int main(int argc, char *argv[]) {
     }
     
     for(int i=0; i<numnodes; i++){
-        for(int j=0; j<k; j++){
-            free(nodes[i]->ljarray[j]);
-        }
-    }
-    for(int i=0; i<numnodes; i++){
         free(nodes[i]->ljarray);
         free(nodes[i]);
     }

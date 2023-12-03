@@ -29,6 +29,7 @@ int list_size(ListNode* list) {
         list = list->nextnode;
     }
     list = first;
+
     return count;
 }
 
@@ -225,6 +226,7 @@ void initialize_arrays(Graph* g, int k,float (distance_value)(point, point)) {
             g->nodes[i]->ljarray[m]->dis = distance_value(*(g->nodes[i]->data),*(curr->node->data));
             curr=curr->nextnode;
         }
+        free(curr);
         sort(g->nodes[i]->ljarray,k);
     }
 }

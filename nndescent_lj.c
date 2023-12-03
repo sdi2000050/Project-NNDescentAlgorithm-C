@@ -35,6 +35,9 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
 
             new[i] = connectlist(new_pk,new_pr);
             old[i] = connectlist(old_kneighbors,old_rneighbors);                    // Connect the sampled kneighbors and rneighbors
+        
+            free(new_kneighbors);
+            free(new_rneighbors);
         }
 
         for(int i=0; i<numofnodes; i++){
@@ -65,6 +68,8 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
                 }
                 neighbors = neighbors->nextnode;
             }
+
+            free(neighbors);
         }
 
         for(int i = 0; i < numofnodes; i++) {
@@ -93,10 +98,13 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
             free(new[i]);
             free(old[i]);
         }
-
         free(new);
         free(old);
-
+    }
+    for(int i=0; i<numofnodes; i++){
+        for(int j=0; j<k; j++){
+            free(graph->nodes[i]->ljarray[j]);
+        }
     }
 }
 
@@ -122,6 +130,7 @@ void deletenode(ListNode** list, int node) {
 
     prev->nextnode = curr->nextnode;
     free(curr);
+
 }
 
 
@@ -161,6 +170,7 @@ int exist(int numnode, ListNode* list){
         }
         current = current->nextnode;
     }
+    free(current);
     return 0;
 }
 
@@ -171,7 +181,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
     while ( a != NULL){                                             // Connect lists a and b
         if(exist(a->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = create_node(a->node->numnode,a->node->kneighbors,a->node->rneighbors,a->node->ljarray,a->node->data);
+            newnode->node = a->node;
             newnode->flag = a->flag;
             newnode->nextnode = NULL;    
 
@@ -189,7 +199,7 @@ ListNode* connectlist(ListNode* a, ListNode* b){
     while ( b != NULL){
         if(exist(b->node->numnode,c) == 0){
             ListNode* newnode = (ListNode*) malloc (sizeof(ListNode));
-            newnode->node = create_node(b->node->numnode,b->node->kneighbors,b->node->rneighbors,b->node->ljarray,b->node->data);
+            newnode->node = b->node;
             newnode->flag = b->flag;
             newnode->nextnode = NULL;    
 
@@ -229,7 +239,7 @@ ListNode* true_neighbors(ListNode* list) {
         }
         curr = curr->nextnode;
     }
-
+    free(curr);
     return true_n;
 }
 
@@ -255,7 +265,7 @@ ListNode* false_neighbors(ListNode* list) {
         }
         curr = curr->nextnode;
     }
-
+    free(curr);
     return false_n;
 }
 
@@ -270,6 +280,7 @@ ListNode* getpk(int pk, ListNode* list) {
             curr = curr ->nextnode;
         }
         curr->nextnode = NULL;
+
         return list;
     }
 }
