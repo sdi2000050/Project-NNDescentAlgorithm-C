@@ -34,21 +34,21 @@ void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
             ListNode* new_pr = getpk(pk,new_rneighbors);
 
             new[i] = connectlist(new_pk,new_pr);
-            old[i] = connectlist(old_kneighbors,old_rneighbors);
+            old[i] = connectlist(old_kneighbors,old_rneighbors);                    // Connect the sampled kneighbors and rneighbors
         }
 
         for(int i=0; i<numofnodes; i++){
 
             ListNode* neighbors = connectlist(new[i],old[i]);
 
-            int num = list_size(new[i]);
+            int num = list_size(new[i]);                                             // For every new(true) node in new[i] check the distances with all the others
             for(int j = 0; j < num; j++) {
                 Node* currentnode = neighbors->node;
                 ListNode* currentneighbors = neighbors->nextnode;
 
                 while(currentneighbors != NULL) {
 
-                    float dis = distance_value(*(currentnode->data),*(currentneighbors->node->data));
+                    float dis = distance_value(*(currentnode->data),*(currentneighbors->node->data));   // Compute the distance and update both ljarrays of the nodes
 
                     if(dis < currentnode->ljarray[k-1]->dis && notinarray(currentneighbors->node->numnode,currentnode->ljarray,k)) {
                         currentnode->ljarray[k-1]->node = currentneighbors->node;
