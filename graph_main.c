@@ -43,7 +43,8 @@ int main(int argc, char *argv[]) {
     printNeighbors(graph);
     printf("\n");
 
-    Distancefunc dis;                                       
+    Distancefunc dis; 
+                                          
     if (strcmp(mode,"point")==0){
         // Point implementation of NN Descent   
         printf("\nPoint implementation:\n"); 
