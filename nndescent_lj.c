@@ -276,7 +276,7 @@ ListNode* getpk(int pk, ListNode* list) {
     }
     else {
         ListNode* curr = list;
-        for(int i = 0; i < pk; i++) {
+        for(int i = 0; i < pk-1; i++) {
             curr = curr ->nextnode;
         }
         curr->nextnode = NULL;
