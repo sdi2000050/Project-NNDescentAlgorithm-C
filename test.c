@@ -374,18 +374,130 @@ void test_chebyshev() {
 	free(d); 
 }
 
+void test_true_neighbors() {
+	ListNode* list = (ListNode*)malloc(sizeof(ListNode));
+	ListNode* first = list;
+
+    for(int i = 0; i < 25; i++) {
+        if (i < 12) {    
+            list->flag = true;
+        } else {
+            list->flag = false;
+        }
+
+        if (i < 24) {
+            list->nextnode = (ListNode*)malloc(sizeof(ListNode));
+            list = list->nextnode;
+        } else {
+            list->nextnode = NULL;
+        }
+    }
+
+	list = first;
+	TEST_ASSERT(list_size(true_neighbors(list)) == 12);
+
+	ListNode* current = list;
+    ListNode* next;
+    while (current != NULL) {
+        next = current->nextnode;
+        free(current);
+        current = next;
+    }
+}
+
+void test_false_neighbors() {
+    ListNode* list = (ListNode*)malloc(sizeof(ListNode));
+    ListNode* first = list;
+
+    for(int i = 0; i < 25; i++) {
+        if (i < 12) {    
+            list->flag = true;
+        } else {
+            list->flag = false;
+        }
+
+        if (i < 24) {
+            list->nextnode = (ListNode*)malloc(sizeof(ListNode));
+            list = list->nextnode;
+        } else {
+            list->nextnode = NULL;
+        }
+    }
+	
+	list = first;
+	TEST_ASSERT(list_size(false_neighbors(list)) == 13);
+
+	ListNode* current = list;
+    ListNode* next;
+    while (current != NULL) {
+        next = current->nextnode;
+        free(current);
+        current = next;
+    }
+}
+
+void test_getpk() {
+    ListNode* list = (ListNode*)malloc(sizeof(ListNode));
+    ListNode* first = list;
+
+	for(int i = 0; i < 25; i++) {
+		if (i < 24) {
+            list->nextnode = (ListNode*)malloc(sizeof(ListNode));
+            list = list->nextnode;
+        } else {
+            list->nextnode = NULL;
+        }
+	}
+
+	list = first;
+	TEST_ASSERT(list_size(getpk(12, list)) == 12);
+
+	ListNode* current = list;
+    ListNode* next;
+    while (current != NULL) {
+        next = current->nextnode;
+        free(current);
+        current = next;
+    }
+
+	ListNode* list2 = (ListNode*)malloc(sizeof(ListNode));
+    first = list2;
+
+	for(int i = 0; i < 25; i++) {
+		if (i < 24) {
+            list2->nextnode = (ListNode*)malloc(sizeof(ListNode));
+            list2 = list2->nextnode;
+        } else {
+            list2->nextnode = NULL;
+        }
+	}
+
+	list2 = first;
+	TEST_ASSERT(list_size(getpk(32, list2)) == 25);
+
+	current = list2;
+    while (current != NULL) {
+        next = current->nextnode;
+        free(current);
+        current = next;
+    }
+}
+
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
 	{ "createNode", test_createNode},
-	{ "createGraph", test_createGraph},	
+	{ "createGraph", test_createGraph},
 	{ "addEdge", test_graph_addedge},
-	{ "list_size", test_listsize},	
-	{ "exist", test_exist},	
+	{ "list_size", test_listsize},
+	{ "exist", test_exist},
 	{ "connectlist", test_connectlist},
-	{ "deletenode", test_deletenode},	
+	{ "deletenode", test_deletenode},
 	{ "notinarray", test_notinarray},
 	{ "euclidean_distance", test_euclidean},
 	{ "manhattan_distance", test_manhattan},
-	{ "chebyshev_distance", test_chebyshev},	
-	{ NULL, NULL } 
+	{ "chebyshev_distance", test_chebyshev},
+	{ "true_neighbors", test_true_neighbors},
+	{ "false_neighbors", test_false_neighbors},
+	{ "getpk", test_getpk},
+	{ NULL, NULL }
 };

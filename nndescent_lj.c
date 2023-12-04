@@ -271,12 +271,12 @@ ListNode* false_neighbors(ListNode* list) {
 
 ListNode* getpk(int pk, ListNode* list) {
 
-    if(list_size(list) <= pk){
+    if(list_size(list) <= pk) {
         return list;
     }
     else {
         ListNode* curr = list;
-        for(int i = 0; i < pk; i++) {
+        for(int i = 0; i < pk - 1; i++) {
             curr = curr ->nextnode;
         }
         curr->nextnode = NULL;
