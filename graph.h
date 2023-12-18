@@ -24,7 +24,7 @@ float manhattan_distance(point x, point y);
 float chebyshev_distance(point x, point y);
 
 //**********NN Descent**********
-void local_join(Graph* graph, int k, float (distance_value)(point, point));
+void local_join(Graph* graph, int k, float (distance_value)(point, point), double d, double p);
 KDistance** nndescentpoint(Graph* graph, int k, int node, point p, Distancefunc distance_value);
 void deletenode(ListNode** list, int node);
 void updateneighbors(Graph* graph, int node);

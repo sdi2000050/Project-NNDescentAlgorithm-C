@@ -14,9 +14,12 @@ int main(int argc, char *argv[]) {
     int k = 0;
     char* dist;
     char* mode;
+    double p;
+    double d;
+    char* eptr;
 
-    if (argc != 8) {
-        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance mode\n", argv[0]);
+    if (argc != 10) {
+        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance mode d p\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -27,6 +30,8 @@ int main(int argc, char *argv[]) {
     k = atoi(argv[5]); 
     dist = argv[6];
     mode = argv[7];
+    d = strtod(argv[8],&eptr);
+    p = strtod(argv[9],&eptr);
 
     if (dim <= 0 || k <= 0) {
         fprintf(stderr, "Invalid number of nodes or dimension.\n");
@@ -108,15 +113,15 @@ int main(int argc, char *argv[]) {
         printf("\nGraph implementation:\n");
         if(strcmp(dist,"euclidean") == 0) {                                  // Take distance
             initialize_arrays(graph,k,euclidean_distance);
-            local_join(graph,k,euclidean_distance);    
+            local_join(graph,k,euclidean_distance,d,p);    
         }
         else if(strcmp(dist,"manhattan") == 0) {
             initialize_arrays(graph,k,manhattan_distance);    
-            local_join(graph,k,manhattan_distance);
+            local_join(graph,k,manhattan_distance,d,p);
         }
         else if(strcmp(dist,"chebysev") == 0) {
             initialize_arrays(graph,k,chebyshev_distance);    
-            local_join(graph,k,chebyshev_distance);
+            local_join(graph,k,chebyshev_distance,d,p);
         }
         else{
             printf("Invalid distance\n");

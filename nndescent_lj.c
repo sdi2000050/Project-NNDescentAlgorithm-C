@@ -4,11 +4,9 @@
 #include "graph.h"
 
 
-void local_join(Graph* graph, int k, float (distance_value)(point, point)) {
+void local_join(Graph* graph, int k, float (distance_value)(point, point), double d, double p) {
     int update = 1;
     int numofnodes = graph->numnodes;
-    double d = 0.001;
-    double p = 0.5;
     int updatecounts=numofnodes;
 
     while(update && updatecounts > (numofnodes*k*d) ) {
