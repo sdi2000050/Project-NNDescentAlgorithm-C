@@ -12,12 +12,25 @@ void setcoords(point *p, float* coords, int dimention) {
     for(int i = 0; i < dimention; i++) {
         p->coord[i] = coords[i];
     }
+
+    p->norm = euclidean_norm(*p);
+}
+
+float euclidean_norm(point p){
+    float norm = 0.0;
+
+    for(int i=0; i<p.dim; i++){
+        norm = norm + (p.coord[i] * p.coord[i]);
+    }
+    
+    return norm;
 }
 
 void printpoint(point point) {
     for(int i = 0; i < point.dim ; i++) {
         printf("%f ", point.coord[i]);
     }
+    printf("\nnorm: %f",point.norm);
     printf("\n");
 }
 

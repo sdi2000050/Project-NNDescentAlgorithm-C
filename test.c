@@ -20,6 +20,18 @@ void test_pointcoords() {
 	free(p); 
 }
 
+void test_euclidean_norm(){
+	float coordinates[] = {1.0, 2.0, 3.0};
+	point* p = (point*) malloc(sizeof(point)); 
+	p->coord = coordinates;
+	p->dim = 3;
+	p->norm = euclidean_norm(*p);
+
+	TEST_ASSERT(p->norm == 14.0);
+
+	free(p);
+}
+
 void test_createNode() {
 	float coor[] = {1.2, 2.6};
 	point* p = (point*) malloc(sizeof(point));
@@ -274,7 +286,6 @@ void test_notinarray() {
 
 #define epsilon 1e-6
 
-
 void test_euclidean() {
 	point* a = (point*) malloc(sizeof(point));
 	float coora[] = {2.2, 3.5};
@@ -485,6 +496,7 @@ void test_getpk() {
 
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
+	{ "euclidean_norm", test_euclidean_norm},
 	{ "createNode", test_createNode},
 	{ "createGraph", test_createGraph},
 	{ "addEdge", test_graph_addedge},

@@ -3,6 +3,7 @@
 typedef struct {
     float *coord;
     int dim;
+    float norm;
 } point;
 
 typedef float (*Distancefunc)(point, point);
