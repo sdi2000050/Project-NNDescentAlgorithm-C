@@ -20,16 +20,27 @@ void test_pointcoords() {
 	free(p); 
 }
 
-void test_euclidean_norm(){
-	float coordinates[] = {1.0, 2.0, 3.0};
-	point* p = (point*) malloc(sizeof(point)); 
-	p->coord = coordinates;
-	p->dim = 3;
-	p->norm = euclidean_norm(*p);
+void test_dot_product(){
+	float coor1[] = {1.0, 2.0, 3.0};
+	float coor2[] = {4.0, 6.0, 8.0};
 
-	TEST_ASSERT(p->norm == 14.0);
+	point* p1 = (point*) malloc(sizeof(point)); 
+	p1->coord = coor1;
+	p1->dim = 3;
+	p1->norm = dot_product(*p1,*p1);
+	TEST_ASSERT(p1->norm == 14.0);
 
-	free(p);
+	point* p2 = (point*) malloc(sizeof(point)); 
+	p2->coord = coor2;
+	p2->dim = 3;
+	p2->norm = dot_product(*p2,*p2);
+	TEST_ASSERT(p2->norm == 116.0);
+
+	float prod = dot_product(*p1,*p2);
+	TEST_ASSERT(prod == 40.0);
+
+	free(p1);
+	free(p2);
 }
 
 void test_createNode() {
@@ -287,6 +298,25 @@ void test_notinarray() {
 #define epsilon 1e-6
 
 void test_euclidean() {
+	float coor1[] = {1.0, 2.0, 3.0};
+	float coor2[] = {4.0, 6.0, 8.0};
+
+	point* p1 = (point*) malloc(sizeof(point)); 
+	setcoords(p1,coor1,3);
+
+	point* p2 = (point*) malloc(sizeof(point)); 
+	setcoords(p2,coor2,3);
+
+	float dis = euclidean_distance(*p1,*p2);
+	
+	TEST_ASSERT( dis == 50.0);
+
+	free(p1);
+	free(p2);
+}
+
+/*
+void test_euclidean() {
 	point* a = (point*) malloc(sizeof(point));
 	float coora[] = {2.2, 3.5};
 	setcoords(a, coora, 2);
@@ -317,7 +347,7 @@ void test_euclidean() {
 	free(b);
 	free(c);
 	free(d);
-}
+}*/
 
 void test_manhattan() {
 	point* a = (point*) malloc(sizeof(point));
@@ -496,7 +526,7 @@ void test_getpk() {
 
 TEST_LIST = {
 	{ "setcoords", test_pointcoords},
-	{ "euclidean_norm", test_euclidean_norm},
+	{ "dotproduct", test_dot_product},
 	{ "createNode", test_createNode},
 	{ "createGraph", test_createGraph},
 	{ "addEdge", test_graph_addedge},

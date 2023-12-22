@@ -13,17 +13,17 @@ void setcoords(point *p, float* coords, int dimention) {
         p->coord[i] = coords[i];
     }
 
-    p->norm = euclidean_norm(*p);
+    p->norm = dot_product(*p,*p);
 }
 
-float euclidean_norm(point p){
-    float norm = 0.0;
+float dot_product(point p1, point p2){
+    float prod = 0.0;
 
-    for(int i=0; i<p.dim; i++){
-        norm = norm + (p.coord[i] * p.coord[i]);
+    for(int i=0; i<p1.dim; i++){
+        prod = prod + (p1.coord[i] * p2.coord[i]);
     }
     
-    return norm;
+    return prod;
 }
 
 void printpoint(point point) {

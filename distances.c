@@ -1,14 +1,9 @@
 #include <math.h>
 #include <stdlib.h>
-#include "graphtypes.h"
+#include "graph.h"
 
 float euclidean_distance(point x, point y) {
-    float s = 0.0;
-    for(int i = 0; i < x.dim; i++) {
-        float a = x.coord[i] - y.coord[i];
-        s = s + pow(a, 2);
-    }
-    return sqrt(s);
+    return x.norm + y.norm - 2*dot_product(x,y);
 }
 
 float manhattan_distance(point x, point y) {

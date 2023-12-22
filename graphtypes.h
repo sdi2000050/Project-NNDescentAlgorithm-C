@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-typedef struct {
+typedef struct point{
     float *coord;
     int dim;
     float norm;

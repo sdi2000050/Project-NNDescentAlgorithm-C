@@ -18,7 +18,7 @@ graph_Implementation.o: graph_Implementation.c
 nndescent_lj.o: nndescent_lj.c
 	gcc -c nndescent_lj.c -o nndescent_lj.o
 
-distances.o: distances.c
+distances.o: distances.c 
 	gcc -c distances.c -o distances.o
 
 test_results : test_results.o graph_Implementation.o nndescent_lj.o distances.o

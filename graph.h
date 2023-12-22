@@ -2,7 +2,7 @@
 
 //**********Points**********
 void setcoords(point *p, float* coords, int dimention);
-float euclidean_norm(point p);
+float dot_product(point p1, point p2);
 void printpoint(point point);
 
 //**********Nodes**********
