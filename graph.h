@@ -18,6 +18,8 @@ void createRandomGraph(Graph* graph, Node** nodes, int k);
 int addEdge(Graph* graph, Node* src, Node* dest, bool flag);
 void printNeighbors(Graph* graph);
 void initialize_arrays(Graph* g, int k, float (distance_value)(point, point));
+int* splithyperplane(float vector[], int dim, int* subset, Node** nodes,int* size);
+void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D);
 
 //**********Distances**********
 float euclidean_distance(point x, point y);

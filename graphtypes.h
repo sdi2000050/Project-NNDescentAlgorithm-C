@@ -17,6 +17,7 @@ typedef struct Node {
     ListNode* kneighbors;
     ListNode* rneighbors;
     KDistance** ljarray; 
+    bool flagrp;
 } Node;
 
 typedef struct ListNode {

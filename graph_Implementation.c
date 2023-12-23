@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <time.h>
 #include "graph.h"
 
@@ -119,6 +120,83 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     fclose(file);
     return nodes;
 }
+
+void normalvector(int p1, int p2, Node** nodes, float vector[]){
+    point* point1 = nodes[p1]->data;
+    point* point2 = nodes[p2]->data;
+    
+    for(int i=0; i<point1->dim; i++){
+        vector[i] = point2->coord[i] - point1->coord[i];
+    }
+
+    double m = 0;
+    for(int i=0; i<point1->dim; i++){
+        m += vector[i] * vector[i];
+    }
+
+    m = sqrt(m);
+
+    for(int i=0; i<point1->dim; i++){
+        vector[i] /= m;
+    }
+
+}
+
+int* splithyperplane(float vector[], int dim, int* subset, Node** nodes, int* size){
+    double D = 0;
+    for(int i=0; i<dim; i++){
+        D += nodes[subset[0]]->data->coord[i] * vector[i];
+    }
+
+    int n = *size;
+    int count = 0;
+    int newsubset[n]; 
+    for(int i=0; i<n; i++){
+        double dotp = 0;
+        for(int j=0; j<dim; j++){
+            dotp += nodes[subset[i]]->data->coord[j] * vector[j];
+        }
+        if (dotp < D){
+            newsubset[count] = subset[i];
+            count++;
+        }
+    }
+
+    *size = count;
+    int* finalsubset = (int*) malloc (count * sizeof(int));
+    for(int i=0; i<count; i++){
+        finalsubset[i] = newsubset[i];
+    }
+
+    return finalsubset;
+}
+
+void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D){
+    srand(time(NULL));
+    
+    int size = graph->numnodes;
+    int* subset = (int*) malloc (size * sizeof(int));
+    for(int i=0; i<size; i++){
+        subset[i] = i;
+    }
+    while( size > D ){
+        int i = rand() % size;
+        int p1 = subset[i];
+        int j = rand() % size; 
+        int p2 = subset[j];
+        while ( i==j ){
+            j = rand() % size;
+            p2 = subset[j];
+        }
+
+        float vector[dim];
+        normalvector(p1,p2,nodes,vector);
+    
+        splithyperplane(vector,dim,subset,nodes,&size);
+    }
+
+}
+
 
 void createRandomGraph(Graph* graph, Node** nodes, int k) {
     srand(time(NULL));
