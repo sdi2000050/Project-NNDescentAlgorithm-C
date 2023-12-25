@@ -171,7 +171,7 @@ int* splithyperplane(float vector[], int dim, int* subset, Node** nodes, int* si
     return finalsubset;
 }
 
-void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D){
+void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function){
     srand(time(NULL));
     
     int size = graph->numnodes;
@@ -195,6 +195,78 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D){
         splithyperplane(vector,dim,subset,nodes,&size);
     }
 
+    Node** knodes = getknodes(subset,nodes,size,dim,k,distance_function);
+
+}
+
+Node** getknodes(int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {
+    Node** knodes = (Node**)malloc(numnodes * sizeof(Node*));
+    if (!knodes) {
+        fprintf(stderr, "Memory allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < numnodes; i++) {
+        knodes[i] = (Node*)malloc(sizeof(Node));
+        if (!knodes[i]) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
+
+        knodes[i]->numnode = nodes[subset[i]]->numnode;
+        knodes[i]->data = nodes[subset[i]]->data;
+        knodes[i]->kneighbors = NULL;
+        knodes[i]->rneighbors = NULL;
+
+        KDistance** distances = (KDistance**)malloc((numnodes) * sizeof(KDistance*));
+        if (!distances) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
+
+        for (int j = 0; j < numnodes; j++) {
+                distances[j] = (KDistance*)malloc(sizeof(KDistance));
+                if (!distances[j]) {
+                    fprintf(stderr, "Memory allocation error\n");
+                    exit(EXIT_FAILURE);
+                }
+
+                distances[j]->node = nodes[subset[j]];
+                distances[j]->dis = distance_function(*(nodes[subset[i]]->data), *(nodes[subset[j]]->data));
+            
+        }
+
+        sort(distances,numnodes);
+
+        ListNode* currentNeighbor = NULL;
+        for (int l = 0; l < k; l++) {
+            ListNode* newNeighbor = (ListNode*)malloc(sizeof(ListNode));
+            if (!newNeighbor) {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+            }
+
+            newNeighbor->node = distances[l+1]->node;
+            newNeighbor->nextnode = NULL;
+
+            if (!knodes[i]->kneighbors) {
+                knodes[i]->kneighbors = newNeighbor;
+                currentNeighbor = newNeighbor;
+            } else {
+                currentNeighbor->nextnode = newNeighbor;
+                currentNeighbor = newNeighbor;
+            }
+        }
+
+        for (int j = 0; j < numnodes-1; j++) {
+            free(distances[j]);
+        }
+        free(distances);
+
+        nodes[subset[i]]->flagrp = true;
+    }
+
+    return knodes;
 }
 
 
