@@ -171,20 +171,20 @@ int* splithyperplane(float vector[], int dim, int* subset, Node** nodes, int* si
     return finalsubset;
 }
 
-void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function){
+void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function) {
     srand(time(NULL));
     
     int size = graph->numnodes;
     int* subset = (int*) malloc (size * sizeof(int));
-    for(int i=0; i<size; i++){
+    for(int i=0; i < size; i++) {
         subset[i] = i;
     }
-    while( size > D ){
+    while( size > D ) {
         int i = rand() % size;
         int p1 = subset[i];
         int j = rand() % size; 
         int p2 = subset[j];
-        while ( i==j ){
+        while ( i==j ) {
             j = rand() % size;
             p2 = subset[j];
         }
@@ -196,6 +196,10 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distanc
     }
 
     Node** knodes = getknodes(subset,nodes,size,dim,k,distance_function);
+
+    create_pt_graph(graph, nodes, k, knodes, subset);
+    free(knodes);
+    free(subset);
 
 }
 
@@ -269,24 +273,55 @@ Node** getknodes(int* subset, Node** nodes, int numnodes, int dim, int k, Distan
     return knodes;
 }
 
-
-void createRandomGraph(Graph* graph, Node** nodes, int k) {
+void create_pt_graph(Graph* graph, Node** nodes, int k, Node** subset_kn, int* subset) {
     srand(time(NULL));
     int numnodes = graph->numnodes;
     int exit;
-    for (int i = 0; i < numnodes; ++i) {
-        int count = 0;
-        while (count < k) {
-            int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
-            if (randomNeighbor != i) {
-                exit = addEdge(graph,nodes[i], nodes[randomNeighbor], true);
-                if (exit == 0) {                                             // Check if a new edge was created    
-                    count++;
+    for(int i = 0; i < numnodes; i++) {
+        if(nodes[i]->flagrp == true) {
+            int subset_i = 0;
+            while(1) {
+                if(nodes[i]->numnode == subset[subset_i]) {
+                    for(int j = 0; j < k; j++) {
+                        exit = addEdge(graph, nodes[i], subset_kn[subset_i], true);
+                    }
+                    break;
+                }
+                subset_i++;
+            }
+        }
+        else {
+            int count = 0;
+            while (count < k) {
+                int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
+                if (randomNeighbor != i) {
+                    exit = addEdge(graph,nodes[i], nodes[randomNeighbor], true);
+                    if (exit == 0) {                                             // Check if a new edge was created    
+                        count++;
+                    }
                 }
             }
         }
     }
 }
+
+// void createRandomGraph(Graph* graph, Node** nodes, int k) {
+//     srand(time(NULL));
+//     int numnodes = graph->numnodes;
+//     int exit;
+//     for (int i = 0; i < numnodes; ++i) {
+//         int count = 0;
+//         while (count < k) {
+//             int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
+//             if (randomNeighbor != i) {
+//                 exit = addEdge(graph,nodes[i], nodes[randomNeighbor], true);
+//                 if (exit == 0) {                                             // Check if a new edge was created    
+//                     count++;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 int addEdge(Graph* graph, Node* src, Node* dest, bool flag) {
     

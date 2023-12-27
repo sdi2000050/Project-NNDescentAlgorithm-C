@@ -17,9 +17,10 @@ int main(int argc, char *argv[]) {
     double p;
     double d;
     char* eptr;
+    int D;
 
-    if (argc != 10) {
-        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance mode d p\n", argv[0]);
+    if (argc != 11) {
+        fprintf(stderr, "Usage: %s input_file file_point starting_node dimension k distance mode d p D\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -32,9 +33,15 @@ int main(int argc, char *argv[]) {
     mode = argv[7];
     d = strtod(argv[8],&eptr);
     p = strtod(argv[9],&eptr);
+    D = atoi(argv[10]);
 
     if (dim <= 0 || k <= 0) {
         fprintf(stderr, "Invalid number of nodes or dimension.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if(D < k) {
+        fprintf(stderr, "Invalid D, please give D > k !!! \n");
         exit(EXIT_FAILURE);
     }
 
@@ -42,7 +49,17 @@ int main(int argc, char *argv[]) {
 
     Graph* graph = createGraph(numnodes);
 
-    createRandomGraph (graph,nodes,k);                      // And create a random graph
+    if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
+        randomprojection(graph, nodes, dim, k, D, euclidean_distance);      
+    }
+    else if(strcmp(dist,"manhattan") == 0) {
+        randomprojection(graph, nodes, dim, k, D, manhattan_distance);      
+    }
+    else if(strcmp(dist,"chebysev") == 0) {
+        randomprojection(graph, nodes, dim, k, D, chebyshev_distance);      
+    }
+
+    //createRandomGraph (graph,nodes,k);                      // And create a random graph
     printf("Initial Graph:\n");
 
     printNeighbors(graph);
