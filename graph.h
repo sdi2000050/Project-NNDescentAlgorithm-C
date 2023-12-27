@@ -20,8 +20,8 @@ void printNeighbors(Graph* graph);
 void initialize_arrays(Graph* g, int k, float (distance_value)(point, point));
 int* splithyperplane(float vector[], int dim, int* subset, Node** nodes,int* size);
 void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function);
-Node** getknodes(int* subset,Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function);
-void create_pt_graph(Graph* graph, Node** nodes, int k, Node** subset_kn, int* subset);
+void getknodes(Graph* graph, int* subset,Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function);
+void create_pt_graph(Graph* graph, Node** nodes, int k);
 
 //**********Distances**********
 float euclidean_distance(point x, point y);

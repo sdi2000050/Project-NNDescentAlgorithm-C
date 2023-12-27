@@ -173,17 +173,18 @@ int* splithyperplane(float vector[], int dim, int* subset, Node** nodes, int* si
 
 void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function) {
     srand(time(NULL));
-    
+
     int size = graph->numnodes;
     int* subset = (int*) malloc (size * sizeof(int));
     for(int i=0; i < size; i++) {
         subset[i] = i;
     }
+    int i,p1,j,p2;
     while( size > D ) {
-        int i = rand() % size;
-        int p1 = subset[i];
-        int j = rand() % size; 
-        int p2 = subset[j];
+        i = rand() % (size+1);
+        p1 = subset[i];
+        j = rand() % (size+1); 
+        p2 = subset[j];
         while ( i==j ) {
             j = rand() % size;
             p2 = subset[j];
@@ -194,33 +195,23 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distanc
     
         splithyperplane(vector,dim,subset,nodes,&size);
     }
+    printf("size:%d\n",size);
+    for(int i=0; i<size; i++){
+        printf("%d ",subset[i]);
+    }
+    printf("\n");
 
-    Node** knodes = getknodes(subset,nodes,size,dim,k,distance_function);
+    getknodes(graph,subset,nodes,size,dim,k,distance_function);
 
-    create_pt_graph(graph, nodes, k, knodes, subset);
-    free(knodes);
+    create_pt_graph(graph, nodes, k);
+
     free(subset);
 
 }
 
-Node** getknodes(int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {
-    Node** knodes = (Node**)malloc(numnodes * sizeof(Node*));
-    if (!knodes) {
-        fprintf(stderr, "Memory allocation error\n");
-        exit(EXIT_FAILURE);
-    }
+void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {
 
     for (int i = 0; i < numnodes; i++) {
-        knodes[i] = (Node*)malloc(sizeof(Node));
-        if (!knodes[i]) {
-            fprintf(stderr, "Memory allocation error\n");
-            exit(EXIT_FAILURE);
-        }
-
-        knodes[i]->numnode = nodes[subset[i]]->numnode;
-        knodes[i]->data = nodes[subset[i]]->data;
-        knodes[i]->kneighbors = NULL;
-        knodes[i]->rneighbors = NULL;
 
         KDistance** distances = (KDistance**)malloc((numnodes) * sizeof(KDistance*));
         if (!distances) {
@@ -242,24 +233,11 @@ Node** getknodes(int* subset, Node** nodes, int numnodes, int dim, int k, Distan
 
         sort(distances,numnodes);
 
-        ListNode* currentNeighbor = NULL;
+        int exit;
         for (int l = 0; l < k; l++) {
-            ListNode* newNeighbor = (ListNode*)malloc(sizeof(ListNode));
-            if (!newNeighbor) {
-                fprintf(stderr, "Memory allocation error\n");
-                exit(EXIT_FAILURE);
-            }
 
-            newNeighbor->node = distances[l+1]->node;
-            newNeighbor->nextnode = NULL;
+            exit = addEdge(graph,nodes[subset[i]],distances[l+1]->node,true);
 
-            if (!knodes[i]->kneighbors) {
-                knodes[i]->kneighbors = newNeighbor;
-                currentNeighbor = newNeighbor;
-            } else {
-                currentNeighbor->nextnode = newNeighbor;
-                currentNeighbor = newNeighbor;
-            }
         }
 
         for (int j = 0; j < numnodes-1; j++) {
@@ -270,25 +248,27 @@ Node** getknodes(int* subset, Node** nodes, int numnodes, int dim, int k, Distan
         nodes[subset[i]]->flagrp = true;
     }
 
-    return knodes;
+    for (int i = 0; i < numnodes; ++i) {
+        Node* currentNode = nodes[subset[i]];
+        printf("Node %d kneighbors: ", subset[i]);
+        ListNode* kneighborNode = currentNode->kneighbors;
+        while (kneighborNode != NULL) {
+            printf("%d ", kneighborNode->node->numnode);
+            kneighborNode = kneighborNode->nextnode;
+        }
+        printf("\n");
+        free(kneighborNode);
+    }
+
 }
 
-void create_pt_graph(Graph* graph, Node** nodes, int k, Node** subset_kn, int* subset) {
+void create_pt_graph(Graph* graph, Node** nodes, int k) {
     srand(time(NULL));
     int numnodes = graph->numnodes;
     int exit;
     for(int i = 0; i < numnodes; i++) {
         if(nodes[i]->flagrp == true) {
-            int subset_i = 0;
-            while(1) {
-                if(nodes[i]->numnode == subset[subset_i]) {
-                    for(int j = 0; j < k; j++) {
-                        exit = addEdge(graph, nodes[i], subset_kn[subset_i], true);
-                    }
-                    break;
-                }
-                subset_i++;
-            }
+            continue;
         }
         else {
             int count = 0;
