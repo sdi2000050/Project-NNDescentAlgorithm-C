@@ -121,7 +121,7 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
     return nodes;
 }
 
-void normalvector(int p1, int p2, Node** nodes, float vector[]){
+void normalvector(int p1, int p2, Node** nodes, float* vector){
     point* point1 = nodes[p1]->data;
     point* point2 = nodes[p2]->data;
     
@@ -142,7 +142,7 @@ void normalvector(int p1, int p2, Node** nodes, float vector[]){
 
 }
 
-int* splithyperplane(float vector[], int dim, int* subset, Node** nodes, int* size){
+int* splithyperplane(float* vector, int dim, int* subset, Node** nodes, int* size){
     double D = 0;
     for(int i=0; i<dim; i++){
         D += nodes[subset[0]]->data->coord[i] * vector[i];
@@ -183,23 +183,20 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distanc
     while( size > D ) {
         i = rand() % (size+1);
         p1 = subset[i];
+
         j = rand() % (size+1); 
         p2 = subset[j];
+
         while ( i==j ) {
             j = rand() % size;
             p2 = subset[j];
         }
 
-        float vector[dim];
+        float* vector = (float*) malloc (dim * sizeof(float));
         normalvector(p1,p2,nodes,vector);
     
-        splithyperplane(vector,dim,subset,nodes,&size);
+        subset = splithyperplane(vector,dim,subset,nodes,&size);
     }
-    printf("size:%d\n",size);
-    for(int i=0; i<size; i++){
-        printf("%d ",subset[i]);
-    }
-    printf("\n");
 
     getknodes(graph,subset,nodes,size,dim,k,distance_function);
 
@@ -220,24 +217,33 @@ void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, i
         }
 
         for (int j = 0; j < numnodes; j++) {
-                distances[j] = (KDistance*)malloc(sizeof(KDistance));
-                if (!distances[j]) {
-                    fprintf(stderr, "Memory allocation error\n");
-                    exit(EXIT_FAILURE);
-                }
+            distances[j] = (KDistance*)malloc(sizeof(KDistance));
+            if (!distances[j]) {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+            }
 
-                distances[j]->node = nodes[subset[j]];
-                distances[j]->dis = distance_function(*(nodes[subset[i]]->data), *(nodes[subset[j]]->data));
+            distances[j]->node = nodes[subset[j]];
+            distances[j]->dis = distance_function(*(nodes[subset[i]]->data), *(nodes[subset[j]]->data));
             
         }
 
         sort(distances,numnodes);
 
         int exit;
-        for (int l = 0; l < k; l++) {
 
-            exit = addEdge(graph,nodes[subset[i]],distances[l+1]->node,true);
+        if ( numnodes <= k ){
+            for (int l = 1; l < numnodes; l++) {
 
+                exit = addEdge(graph,nodes[subset[i]],distances[l]->node,true);
+
+            }
+        } else {
+            for (int l = 0; l < k; l++) {
+
+                exit = addEdge(graph,nodes[subset[i]],distances[l+1]->node,true);
+
+            }
         }
 
         for (int j = 0; j < numnodes-1; j++) {
@@ -248,18 +254,6 @@ void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, i
         nodes[subset[i]]->flagrp = true;
     }
 
-    for (int i = 0; i < numnodes; ++i) {
-        Node* currentNode = nodes[subset[i]];
-        printf("Node %d kneighbors: ", subset[i]);
-        ListNode* kneighborNode = currentNode->kneighbors;
-        while (kneighborNode != NULL) {
-            printf("%d ", kneighborNode->node->numnode);
-            kneighborNode = kneighborNode->nextnode;
-        }
-        printf("\n");
-        free(kneighborNode);
-    }
-
 }
 
 void create_pt_graph(Graph* graph, Node** nodes, int k) {
@@ -268,7 +262,19 @@ void create_pt_graph(Graph* graph, Node** nodes, int k) {
     int exit;
     for(int i = 0; i < numnodes; i++) {
         if(nodes[i]->flagrp == true) {
-            continue;
+            if(list_size(nodes[i]->kneighbors) < k){
+                int count = list_size(nodes[i]->kneighbors);
+                while (count < k) {
+                    int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
+                    if (randomNeighbor != i) {
+                        exit = addEdge(graph,nodes[i], nodes[randomNeighbor], true);
+                        if (exit == 0) {                                             // Check if a new edge was created    
+                            count++;
+                        }
+                    }
+                }
+
+            }
         }
         else {
             int count = 0;
