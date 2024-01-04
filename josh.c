@@ -4,26 +4,33 @@
 #include <stdlib.h> 
 #include "graph.h"
 
-typedef struct Queue{
+typedef struct List{
+    void (*job)(void*);
+    List* nextjob;
+} List;
+
+
+struct queue {
     int size;
-    void* job;
-    Queue* nextjob;
-}Queue;
+    List* firstjob;
+    List* lastjob;
+};
 
+typedef struct queue* Queue;
 
-struct jobscheduler{
+typedef struct jobscheduler{
     int execution_threads;
-    Queue* q;
+    Queue q;
     pthread_t* tids;
     bool* thflag;
     pthread_mutex_t mutex;
 
-}JobS;
+} JobS;
 
 JobS* initialize_scheduler(int execution_threads){
     JobS* sch = (JobS*) malloc (sizeof(JobS));
     sch->execution_threads = execution_threads;
-    sch->q = NULL;
+    sch->q = (Queue*)malloc(sizeof(Queue));
 
     sch->tids = (pthread_t*)malloc(execution_threads * sizeof(pthread_t));
     if (sch->tids == NULL) {
@@ -64,10 +71,13 @@ JobS* initialize_scheduler(int execution_threads){
 
 
 
-int submit_job(JobScheduler* sch, Job* j){}
+int submit_job(JobS* sch, void (*jobfunc)(void*)) {
+    sch->q->lastjob = (Queue*)malloc(sizeof(Queue));
 
-int start_execute(JobScheduler* sch){}
+}
 
-int wait_all_tasks_finish(JobScheduler* sch){}
+int start_execute(JobS* sch){}
 
-int destroy_scheduler(JobScheduler* sch){}
+int wait_all_tasks_finish(JobS* sch) {}
+
+int destroy_scheduler(JobS* sch){}

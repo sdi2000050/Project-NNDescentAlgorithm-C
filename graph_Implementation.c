@@ -203,7 +203,7 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distanc
     create_pt_graph(graph, nodes, k);
 
     free(subset);
-
+      
 }
 
 void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {
