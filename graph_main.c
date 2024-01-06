@@ -4,6 +4,8 @@
 #include <time.h>
 #include "graph.h"
 
+#define THREADS 4
+
 int main(int argc, char *argv[]) {
 
     char *input_file = NULL;
@@ -49,17 +51,36 @@ int main(int argc, char *argv[]) {
 
     Graph* graph = createGraph(numnodes);
 
-    if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
-        randomprojection(graph, nodes, dim, k, D, euclidean_distance);      
-    }
-    else if(strcmp(dist,"manhattan") == 0) {
-        randomprojection(graph, nodes, dim, k, D, manhattan_distance);      
-    }
-    else if(strcmp(dist,"chebysev") == 0) {
-        randomprojection(graph, nodes, dim, k, D, chebyshev_distance);      
+    JobS* sch = initialize_scheduler(THREADS);
+
+
+    RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
+    rp->graph = graph;
+    rp->nodes = nodes;
+    rp->dim = dim;
+    rp->k = k;
+    rp->D = D;
+    for(int i=0; i<THREADS; i++){
+        if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
+            rp->distance_function = euclidean_distance;
+            submit_job(sch,&randomprojection,(void*)rp);
+        }
+        else if(strcmp(dist,"manhattan") == 0) {
+            rp->distance_function = manhattan_distance;
+            submit_job(sch,&randomprojection,(void*)rp);     
+        }
+        else if(strcmp(dist,"chebysev") == 0) {
+            rp->distance_function = chebyshev_distance;
+            submit_job(sch,&randomprojection,(void*)rp);      
+        }
     }
 
-    //createRandomGraph (graph,nodes,k);                      // And create a random graph
+    wait_all_tasks_finish(sch);
+    printf("all tasks finished\n");
+
+    destroy_scheduler(sch);
+    create_pt_graph(graph, nodes, k);
+
     printf("Initial Graph:\n");
 
     printNeighbors(graph);
@@ -148,6 +169,7 @@ int main(int argc, char *argv[]) {
         
         printNeighbors(graph);
     }
+
     
     for(int i=0; i<numnodes; i++){
         free(nodes[i]->ljarray);

@@ -4,11 +4,14 @@
 #include <stdlib.h> 
 #include "graph.h"
 
-typedef struct List{
+typedef struct list List;
+typedef struct queue* Queue;
+
+struct list{
     void (*job)(void*);
     void* args;
     List* nextjob;
-} List;
+};
 
 struct queue {
     int size;
@@ -16,7 +19,6 @@ struct queue {
     List* lastjob;
 };
 
-typedef struct queue* Queue;
 
 typedef struct jobscheduler{
     int execution_threads;
@@ -28,10 +30,11 @@ typedef struct jobscheduler{
     bool destroy;
 } JobS;
 
+
 JobS* initialize_scheduler(int execution_threads){
     JobS* sch = (JobS*) malloc (sizeof(JobS));
     sch->execution_threads = execution_threads;
-    sch->q = malloc (sizeof(Queue));
+    sch->q = (Queue) malloc (sizeof(struct queue));
     sch->q->size = 0;
     sch->q->firstjob = NULL;
     sch->q->lastjob = NULL;
@@ -44,11 +47,11 @@ JobS* initialize_scheduler(int execution_threads){
     }
 
     for(int i=0; i<execution_threads; i++){
-        if (pthread_create(&sch->tids[i],NULL,start_execute,(void*)sch) != 0){///if (pthread_create(&sch->tids[i],NULL,NULL,NULL) != 0){
+        if (pthread_create(&sch->tids[i],NULL,start_execute,(void*)sch) != 0){
             perror("Error creating thread");
             free(sch->tids);
             free(sch);
-            return 1;
+            return NULL;
         }
     }
     
@@ -68,7 +71,7 @@ JobS* initialize_scheduler(int execution_threads){
         free(sch->tids);
         free(sch->thflag);
         free(sch);
-        return 1;
+        return NULL;
     }
 
     if (pthread_cond_init(&sch->condv, NULL) != 0) {
@@ -76,7 +79,7 @@ JobS* initialize_scheduler(int execution_threads){
         free(sch->tids);
         free(sch->thflag);
         free(sch);
-        return 1;
+        return NULL;
     }
 
     sch->destroy = false;
@@ -84,12 +87,13 @@ JobS* initialize_scheduler(int execution_threads){
     return sch;
 }
 
-int submit_job(JobS* sch, void (*jobfunc)(void*)) {
+int submit_job(JobS* sch, void (*jobfunc)(void*), void* args) {
     pthread_mutex_lock(&sch->mutex);
 
     if(sch->q->size == 0) {
         sch->q->firstjob = (List*)malloc(sizeof(List));
         sch->q->firstjob->job = jobfunc;
+        sch->q->firstjob->args = args;
         sch->q->lastjob = sch->q->firstjob;
         sch->q->lastjob->nextjob = NULL;
         sch->q->size++;
@@ -98,6 +102,7 @@ int submit_job(JobS* sch, void (*jobfunc)(void*)) {
         List* newjob = (List*)malloc(sizeof(List));
         newjob->nextjob = NULL;
         newjob->job = jobfunc;
+        newjob->args = args;
         sch->q->lastjob->nextjob = newjob;
         sch->q->size++;
     }
@@ -116,6 +121,7 @@ void* start_execute(void* s){
         pthread_mutex_lock(&sch->mutex);
 
         while (sch->q->size == 0 && !sch->destroy) {
+            printf("size %d\n",sch->q->size);
             pthread_cond_wait(&sch->condv, &sch->mutex);
         }
 
@@ -126,9 +132,9 @@ void* start_execute(void* s){
 
         List* current_job = sch->q->firstjob;
         if (current_job != NULL) {
-
-            current_job->job(current_job->args); //execute????
-
+            printf("thread running size:%d\n",sch->q->size);
+            current_job->job(current_job->args); 
+            printf("job okey\n");
             sch->q->firstjob = current_job->nextjob;
             //free(current_job);
             sch->q->size--;
@@ -145,8 +151,9 @@ void* start_execute(void* s){
 int wait_all_tasks_finish(JobS* sch) {
     pthread_mutex_lock(&sch->mutex);
     
-    while (sch->q->size != 0){
-        pthread_cond_wait(&sch->condv, &sch->mutex);
+    while (sch->q->size != 0 && !sch->destroy){
+        printf("waiting...\n");
+        pthread_cond_wait(&sch->condv,&sch->mutex);
     }
 
     pthread_mutex_unlock(&sch->mutex);
@@ -168,6 +175,13 @@ int destroy_scheduler(JobS* sch) {
     free(sch->tids);
     pthread_mutex_destroy(&sch->mutex);
     pthread_cond_destroy(&sch->condv);
+    List* current = sch->q->firstjob;
+    List* next;
+    while (current != NULL) {
+        next = current->nextjob;
+        free(current);
+        current = next;
+    }
     free(sch->q);
     free(sch);
 

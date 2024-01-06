@@ -171,9 +171,16 @@ int* splithyperplane(float* vector, int dim, int* subset, Node** nodes, int* siz
     return finalsubset;
 }
 
-void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function) {
-    srand(time(NULL));
+void randomprojection(void* args) {
+    RPargs* rp = (RPargs*) args;
+    Graph* graph = rp->graph;
+    Node** nodes = rp->nodes;
+    int dim = rp->dim;
+    int k = rp->k;
+    int D = rp->D;
+    Distancefunc distance_function = rp->distance_function;
 
+    srand(time(NULL));
     int size = graph->numnodes;
     int* subset = (int*) malloc (size * sizeof(int));
     for(int i=0; i < size; i++) {
@@ -200,10 +207,9 @@ void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distanc
 
     getknodes(graph,subset,nodes,size,dim,k,distance_function);
 
-    create_pt_graph(graph, nodes, k);
-
     free(subset);
-      
+    printf("rp terminated\n");
+
 }
 
 void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {
@@ -291,23 +297,6 @@ void create_pt_graph(Graph* graph, Node** nodes, int k) {
     }
 }
 
-// void createRandomGraph(Graph* graph, Node** nodes, int k) {
-//     srand(time(NULL));
-//     int numnodes = graph->numnodes;
-//     int exit;
-//     for (int i = 0; i < numnodes; ++i) {
-//         int count = 0;
-//         while (count < k) {
-//             int randomNeighbor = rand() % numnodes;                         // Random neighbor node index
-//             if (randomNeighbor != i) {
-//                 exit = addEdge(graph,nodes[i], nodes[randomNeighbor], true);
-//                 if (exit == 0) {                                             // Check if a new edge was created    
-//                     count++;
-//                 }
-//             }
-//         }
-//     }
-// }
 
 int addEdge(Graph* graph, Node* src, Node* dest, bool flag) {
     

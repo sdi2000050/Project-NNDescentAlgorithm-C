@@ -19,7 +19,7 @@ int addEdge(Graph* graph, Node* src, Node* dest, bool flag);
 void printNeighbors(Graph* graph);
 void initialize_arrays(Graph* g, int k, float (distance_value)(point, point));
 int* splithyperplane(float vector[], int dim, int* subset, Node** nodes,int* size);
-void randomprojection(Graph* graph, Node** nodes, int dim, int k, int D, Distancefunc distance_function);
+void randomprojection(void* args);
 void getknodes(Graph* graph, int* subset,Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function);
 void create_pt_graph(Graph* graph, Node** nodes, int k);
 
@@ -41,3 +41,11 @@ ListNode* connectlist(ListNode* a, ListNode* b);
 ListNode* true_neighbors(ListNode* list);
 ListNode* false_neighbors(ListNode* list);
 ListNode* getpk(int pk, ListNode* list);
+
+
+//**********Job Scheduler*********
+JobS* initialize_scheduler(int execution_threads);
+int submit_job(JobS* sch, void (*jobfunc)(void*), void* args);
+void* start_execute(void* s);
+int wait_all_tasks_finish(JobS* sch);
+int destroy_scheduler(JobS* sch);

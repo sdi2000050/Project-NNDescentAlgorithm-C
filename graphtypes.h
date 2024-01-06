@@ -36,3 +36,14 @@ typedef struct kdistances {
     float dis;
     bool flag;
 } KDistance;
+
+typedef struct jobscheduler JobS;
+
+typedef struct randomprojectionargs {
+    Graph* graph;
+    Node** nodes;
+    int dim;
+    int k;
+    int D;
+    Distancefunc distance_function;
+} RPargs;

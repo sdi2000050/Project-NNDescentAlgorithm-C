@@ -4,10 +4,10 @@ all: graph_main\
 	 test
 
 graph_main: graph_main.o $(LIBRARY_NAME)
-	gcc graph_main.o -L. -lgraph -o graph_main -lm
+	gcc -pthread -Werror -Wall graph_main.o -L. -lgraph -o graph_main -lm
 
-$(LIBRARY_NAME): graph_Implementation.o nndescent_lj.o distances.o
-	ar rcs $(LIBRARY_NAME) graph_Implementation.o nndescent_lj.o distances.o
+$(LIBRARY_NAME): graph_Implementation.o nndescent_lj.o distances.o josh.o
+	ar rcs $(LIBRARY_NAME) graph_Implementation.o nndescent_lj.o distances.o josh.o
 
 graph_main.o: graph_main.c  
 	gcc -c graph_main.c -o graph_main.o 
@@ -20,6 +20,9 @@ nndescent_lj.o: nndescent_lj.c
 
 distances.o: distances.c 
 	gcc -c distances.c -o distances.o
+
+josh.o: josh.c
+	gcc -c josh.c -o josh.o
 
 test_results : test_results.o graph_Implementation.o nndescent_lj.o distances.o
 	gcc graph_Implementation.o nndescent_lj.o distances.o test_results.o -o test_results -lm 
