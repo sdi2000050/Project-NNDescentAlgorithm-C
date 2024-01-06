@@ -4,7 +4,7 @@
 #include <time.h>
 #include "graph.h"
 
-#define THREADS 4
+#define THREADS 3
 
 int main(int argc, char *argv[]) {
 
@@ -53,14 +53,14 @@ int main(int argc, char *argv[]) {
 
     JobS* sch = initialize_scheduler(THREADS);
 
-
     RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
-    rp->graph = graph;
-    rp->nodes = nodes;
-    rp->dim = dim;
-    rp->k = k;
-    rp->D = D;
     for(int i=0; i<THREADS; i++){
+        rp->graph = graph;
+        rp->nodes = nodes;
+        rp->dim = dim;
+        rp->k = k;
+        rp->D = D;
+
         if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
             rp->distance_function = euclidean_distance;
             submit_job(sch,&randomprojection,(void*)rp);
@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
             rp->distance_function = chebyshev_distance;
             submit_job(sch,&randomprojection,(void*)rp);      
         }
+
     }
 
     wait_all_tasks_finish(sch);

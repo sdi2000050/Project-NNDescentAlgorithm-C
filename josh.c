@@ -132,15 +132,17 @@ void* start_execute(void* s){
 
         List* current_job = sch->q->firstjob;
         if (current_job != NULL) {
+            pthread_t thread_id = pthread_self();
+            printf("Thread ID: %lu\n", (unsigned long)thread_id);
             printf("thread running size:%d\n",sch->q->size);
             current_job->job(current_job->args); 
             printf("job okey\n");
             sch->q->firstjob = current_job->nextjob;
-            //free(current_job);
+            free(current_job);
             sch->q->size--;
 
             pthread_cond_signal(&sch->condv);
-        }
+        }        
 
         pthread_mutex_unlock(&sch->mutex);
     }
