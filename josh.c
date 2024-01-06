@@ -10,7 +10,6 @@ typedef struct List{
     List* nextjob;
 } List;
 
-
 struct queue {
     int size;
     List* firstjob;
@@ -85,23 +84,29 @@ JobS* initialize_scheduler(int execution_threads){
     return sch;
 }
 
-int submit_job(JobS* sch, void (jobfunc)(void)) {
+int submit_job(JobS* sch, void (*jobfunc)(void*)) {
+    pthread_mutex_lock(&sch->mutex);
+
     if(sch->q->size == 0) {
-        sch->q->firstjob = (List)malloc(sizeof(List));
+        sch->q->firstjob = (List*)malloc(sizeof(List));
         sch->q->firstjob->job = jobfunc;
         sch->q->lastjob = sch->q->firstjob;
         sch->q->lastjob->nextjob = NULL;
         sch->q->size++;
-        return 0;
     }
     else {
-        List newjob = (List*)malloc(sizeof(List));
+        List* newjob = (List*)malloc(sizeof(List));
         newjob->nextjob = NULL;
         newjob->job = jobfunc;
         sch->q->lastjob->nextjob = newjob;
         sch->q->size++;
-        return 0;
     }
+
+    pthread_mutex_unlock(&sch->mutex);
+
+    pthread_cond_signal(&sch->condv);
+
+    return 0;
 }
 
 void* start_execute(void* s){
@@ -122,7 +127,7 @@ void* start_execute(void* s){
         List* current_job = sch->q->firstjob;
         if (current_job != NULL) {
 
-            current_job->job(current_job->args);//execute????
+            current_job->job(current_job->args); //execute????
 
             sch->q->firstjob = current_job->nextjob;
             //free(current_job);
@@ -138,12 +143,14 @@ void* start_execute(void* s){
 }
 
 int wait_all_tasks_finish(JobS* sch) {
-    for (int i = 0; i < sch->execution_threads; i++) {
-        if (pthread_join(sch->tids[i], NULL) != 0) {
-            perror("Error joining thread");
-            return 1;
-        }
+    pthread_mutex_lock(&sch->mutex);
+    
+    while (sch->q->size != 0){
+        pthread_cond_wait(&sch->condv, &sch->mutex);
     }
+
+    pthread_mutex_unlock(&sch->mutex);
+
     return 0;
 }
 
