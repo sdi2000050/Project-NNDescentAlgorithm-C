@@ -6,10 +6,15 @@
 
 typedef struct list List;
 typedef struct queue* Queue;
+typedef struct job Job;
 
-struct list{
+struct job {
     void (*job)(void*);
     void* args;
+};
+
+struct list{
+    Job* j;
     List* nextjob;
 };
 
@@ -30,6 +35,14 @@ typedef struct jobscheduler{
     bool destroy;
 } JobS;
 
+Job* jobcreate (void (*job)(void*), void* args){
+    Job* j = (Job*) malloc(sizeof(Job));
+    j->job = job;
+    j->args = args;
+
+    return j;
+}
+
 
 JobS* initialize_scheduler(int execution_threads){
     JobS* sch = (JobS*) malloc (sizeof(JobS));
@@ -40,11 +53,6 @@ JobS* initialize_scheduler(int execution_threads){
     sch->q->lastjob = NULL;
 
     sch->tids = (pthread_t*)malloc(execution_threads * sizeof(pthread_t));
-    if (sch->tids == NULL) {
-        perror("Error allocating memory for thread IDs");
-        free(sch);
-        exit(EXIT_FAILURE);
-    }
 
     for(int i=0; i<execution_threads; i++){
         if (pthread_create(&sch->tids[i],NULL,start_execute,(void*)sch) != 0){
@@ -87,29 +95,27 @@ JobS* initialize_scheduler(int execution_threads){
     return sch;
 }
 
-int submit_job(JobS* sch, void (*jobfunc)(void*), void* args) {
+int submit_job(JobS* sch, Job* j) {
     pthread_mutex_lock(&sch->mutex);
 
     if(sch->q->size == 0) {
         sch->q->firstjob = (List*)malloc(sizeof(List));
-        sch->q->firstjob->job = jobfunc;
-        sch->q->firstjob->args = args;
+        sch->q->firstjob->j = j;
         sch->q->lastjob = sch->q->firstjob;
         sch->q->lastjob->nextjob = NULL;
-        sch->q->size++;
     }
     else {
         List* newjob = (List*)malloc(sizeof(List));
         newjob->nextjob = NULL;
-        newjob->job = jobfunc;
-        newjob->args = args;
+        newjob->j = j;
         sch->q->lastjob->nextjob = newjob;
-        sch->q->size++;
+        sch->q->lastjob = newjob;
     }
 
-    pthread_mutex_unlock(&sch->mutex);
-
+    sch->q->size++;
     pthread_cond_signal(&sch->condv);
+    
+    pthread_mutex_unlock(&sch->mutex);
 
     return 0;
 }
@@ -121,7 +127,6 @@ void* start_execute(void* s){
         pthread_mutex_lock(&sch->mutex);
 
         while (sch->q->size == 0 && !sch->destroy) {
-            printf("size %d\n",sch->q->size);
             pthread_cond_wait(&sch->condv, &sch->mutex);
         }
 
@@ -132,11 +137,9 @@ void* start_execute(void* s){
 
         List* current_job = sch->q->firstjob;
         if (current_job != NULL) {
-            pthread_t thread_id = pthread_self();
-            printf("Thread ID: %lu\n", (unsigned long)thread_id);
-            printf("thread running size:%d\n",sch->q->size);
-            current_job->job(current_job->args); 
-            printf("job okey\n");
+         
+            current_job->j->job(current_job->j->args); 
+
             sch->q->firstjob = current_job->nextjob;
             free(current_job);
             sch->q->size--;
@@ -154,7 +157,6 @@ int wait_all_tasks_finish(JobS* sch) {
     pthread_mutex_lock(&sch->mutex);
     
     while (sch->q->size != 0 && !sch->destroy){
-        printf("waiting...\n");
         pthread_cond_wait(&sch->condv,&sch->mutex);
     }
 

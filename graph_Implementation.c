@@ -208,8 +208,6 @@ void randomprojection(void* args) {
     getknodes(graph,subset,nodes,size,dim,k,distance_function);
 
     free(subset);
-    printf("rp terminated\n");
-
 }
 
 void getknodes(Graph* graph, int* subset, Node** nodes, int numnodes, int dim, int k, Distancefunc distance_function) {

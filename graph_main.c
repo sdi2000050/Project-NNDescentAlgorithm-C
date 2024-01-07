@@ -4,7 +4,7 @@
 #include <time.h>
 #include "graph.h"
 
-#define THREADS 3
+#define THREADS 4
 
 int main(int argc, char *argv[]) {
 
@@ -42,10 +42,6 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    if(D < k) {
-        fprintf(stderr, "Invalid D, please give D > k !!! \n");
-        exit(EXIT_FAILURE);
-    }
 
     Node** nodes = getnodes(input_file,&numnodes,dim);      // Get the nodes from the file
 
@@ -53,8 +49,8 @@ int main(int argc, char *argv[]) {
 
     JobS* sch = initialize_scheduler(THREADS);
 
-    RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
     for(int i=0; i<THREADS; i++){
+        RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
         rp->graph = graph;
         rp->nodes = nodes;
         rp->dim = dim;
@@ -63,23 +59,25 @@ int main(int argc, char *argv[]) {
 
         if(strcmp(dist,"euclidean") == 0) {                                                          // and execute the algorithm according to dis_num imput!
             rp->distance_function = euclidean_distance;
-            submit_job(sch,&randomprojection,(void*)rp);
+            Job* j = jobcreate(&randomprojection,(void*)rp);
+            submit_job(sch,j);
         }
         else if(strcmp(dist,"manhattan") == 0) {
             rp->distance_function = manhattan_distance;
-            submit_job(sch,&randomprojection,(void*)rp);     
-        }
+            Job* j = jobcreate(&randomprojection,(void*)rp);
+            submit_job(sch,j);        }
         else if(strcmp(dist,"chebysev") == 0) {
             rp->distance_function = chebyshev_distance;
-            submit_job(sch,&randomprojection,(void*)rp);      
+            Job* j = jobcreate(&randomprojection,(void*)rp);
+            submit_job(sch,j);        
         }
-
     }
 
     wait_all_tasks_finish(sch);
-    printf("all tasks finished\n");
 
     destroy_scheduler(sch);
+    
+    printf("scheduler okey\n");
     create_pt_graph(graph, nodes, k);
 
     printf("Initial Graph:\n");

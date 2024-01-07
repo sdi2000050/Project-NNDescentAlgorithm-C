@@ -38,6 +38,8 @@ typedef struct kdistances {
 } KDistance;
 
 typedef struct jobscheduler JobS;
+typedef struct job Job;
+
 
 typedef struct randomprojectionargs {
     Graph* graph;

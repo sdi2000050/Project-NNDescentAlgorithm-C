@@ -44,8 +44,9 @@ ListNode* getpk(int pk, ListNode* list);
 
 
 //**********Job Scheduler*********
+Job* jobcreate (void (*job)(void*), void* args);
 JobS* initialize_scheduler(int execution_threads);
-int submit_job(JobS* sch, void (*jobfunc)(void*), void* args);
+int submit_job(JobS* sch, Job* j);
 void* start_execute(void* s);
 int wait_all_tasks_finish(JobS* sch);
 int destroy_scheduler(JobS* sch);
