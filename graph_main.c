@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 
     JobS* sch = initialize_scheduler(THREADS);
 
-    for(int i=0; i<THREADS; i++){
+    for(int i=0; i<(THREADS*2); i++){
         RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
         rp->graph = graph;
         rp->nodes = nodes;
@@ -74,10 +74,7 @@ int main(int argc, char *argv[]) {
     }
 
     wait_all_tasks_finish(sch);
-
-    destroy_scheduler(sch);
     
-    printf("scheduler okey\n");
     create_pt_graph(graph, nodes, k);
 
     printf("Initial Graph:\n");
@@ -169,7 +166,8 @@ int main(int argc, char *argv[]) {
         printNeighbors(graph);
     }
 
-    
+    destroy_scheduler(sch);
+
     for(int i=0; i<numnodes; i++){
         free(nodes[i]->ljarray);
         free(nodes[i]);

@@ -172,10 +172,6 @@ int destroy_scheduler(JobS* sch) {
     pthread_cond_broadcast(&sch->condv); 
     pthread_mutex_unlock(&sch->mutex);
 
-    for (int i = 0; i < sch->execution_threads; i++) {
-        pthread_join(sch->tids[i], NULL);
-    }
-
     free(sch->tids);
     pthread_mutex_destroy(&sch->mutex);
     pthread_cond_destroy(&sch->condv);
