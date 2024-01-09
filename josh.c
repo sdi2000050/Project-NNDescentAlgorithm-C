@@ -29,7 +29,6 @@ typedef struct jobscheduler{
     int execution_threads;
     Queue q;
     pthread_t* tids;
-    bool* thflag;
     pthread_mutex_t mutex;
     pthread_cond_t condv;
     bool destroy;
@@ -54,30 +53,9 @@ JobS* initialize_scheduler(int execution_threads){
 
     sch->tids = (pthread_t*)malloc(execution_threads * sizeof(pthread_t));
 
-    for(int i=0; i<execution_threads; i++){
-        if (pthread_create(&sch->tids[i],NULL,start_execute,(void*)sch) != 0){
-            perror("Error creating thread");
-            free(sch->tids);
-            free(sch);
-            return NULL;
-        }
-    }
-    
-    sch->thflag = (bool*) malloc (execution_threads*sizeof(bool));
-    if (sch->thflag == NULL) {
-        perror("Error allocating memory for thread flags");
-        free(sch->tids);
-        free(sch);
-        exit(EXIT_FAILURE);
-    }
-    for(int i=0; i<execution_threads; i++){
-        sch->thflag[i] = false;
-    }
-
     if (pthread_mutex_init(&sch->mutex, NULL) != 0) {
         perror("Error initializing mutex");
         free(sch->tids);
-        free(sch->thflag);
         free(sch);
         return NULL;
     }
@@ -85,7 +63,6 @@ JobS* initialize_scheduler(int execution_threads){
     if (pthread_cond_init(&sch->condv, NULL) != 0) {
         perror("Error initializing condition variable");
         free(sch->tids);
-        free(sch->thflag);
         free(sch);
         return NULL;
     }
@@ -113,14 +90,23 @@ int submit_job(JobS* sch, Job* j) {
     }
 
     sch->q->size++;
-    pthread_cond_signal(&sch->condv);
-    
     pthread_mutex_unlock(&sch->mutex);
 
+    pthread_cond_signal(&sch->condv);
+    
     return 0;
 }
 
-void* start_execute(void* s){
+int start_execute(JobS* sch) {
+
+    for (int i = 0; i < sch->execution_threads; ++i) {
+        pthread_create(&sch->tids[i], NULL, execute, sch);
+    }
+
+    return 0; 
+}
+
+void* execute(void* s){
     JobS* sch = (JobS*)s;
 
     while (1) {
@@ -143,11 +129,11 @@ void* start_execute(void* s){
             sch->q->firstjob = current_job->nextjob;
             free(current_job);
             sch->q->size--;
-
-            pthread_cond_signal(&sch->condv);
         }        
-
         pthread_mutex_unlock(&sch->mutex);
+
+        pthread_cond_signal(&sch->condv);
+
     }
 
     return NULL;
@@ -175,13 +161,6 @@ int destroy_scheduler(JobS* sch) {
     free(sch->tids);
     pthread_mutex_destroy(&sch->mutex);
     pthread_cond_destroy(&sch->condv);
-    List* current = sch->q->firstjob;
-    List* next;
-    while (current != NULL) {
-        next = current->nextjob;
-        free(current);
-        current = next;
-    }
     free(sch->q);
     free(sch);
 

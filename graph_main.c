@@ -4,7 +4,6 @@
 #include <time.h>
 #include "graph.h"
 
-#define THREADS 4
 
 int main(int argc, char *argv[]) {
 
@@ -41,13 +40,13 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Invalid number of nodes or dimension.\n");
         exit(EXIT_FAILURE);
     }
-
-
-    Node** nodes = getnodes(input_file,&numnodes,dim);      // Get the nodes from the file
-
-    Graph* graph = createGraph(numnodes);
-
+    
     JobS* sch = initialize_scheduler(THREADS);
+    start_execute(sch);
+
+    Node** nodes = getnodes(sch,input_file,&numnodes,dim);      // Get the nodes from the file
+    
+    Graph* graph = createGraph(numnodes);
 
     for(int i=0; i<(THREADS*2); i++){
         RPargs* rp = (RPargs*) malloc (sizeof(RPargs));
@@ -73,8 +72,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
+
     wait_all_tasks_finish(sch);
-    
+
+    printf("all tasks rp finished\n");
+
     create_pt_graph(graph, nodes, k);
 
     printf("Initial Graph:\n");

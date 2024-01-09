@@ -12,7 +12,7 @@ $(LIBRARY_NAME): graph_Implementation.o nndescent_lj.o distances.o josh.o
 graph_main.o: graph_main.c  
 	gcc -c graph_main.c -o graph_main.o 
 
-graph_Implementation.o: graph_Implementation.c 
+graph_Implementation.o: graph_Implementation.c
 	gcc -c graph_Implementation.c -o graph_Implementation.o 
 
 nndescent_lj.o: nndescent_lj.c
@@ -30,8 +30,8 @@ test_results : test_results.o graph_Implementation.o nndescent_lj.o distances.o
 test_results.o : test_results.c 
 	gcc -c test_results.c -o test_results.o 
 
-test : test.o graph_Implementation.o nndescent_lj.o distances.o
-	gcc graph_Implementation.o nndescent_lj.o distances.o test.o -o test -lm 
+test : test.o graph_Implementation.o nndescent_lj.o distances.o josh.o
+	gcc -pthread -Werror -Wall graph_Implementation.o nndescent_lj.o distances.o josh.o test.o -o test -lm 
 
 test.o : test.c 
 	gcc -c test.c -o test.o 

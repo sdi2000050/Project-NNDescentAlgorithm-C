@@ -1,13 +1,14 @@
 #include "graphtypes.h"
 
 //**********Points**********
+void getpoints(void* args);
 void setcoords(point *p, float* coords, int dimention);
 float dot_product(point p1, point p2);
 void printpoint(point point);
 
 //**********Nodes**********
 Node* create_node(int n,  ListNode* kn, ListNode* rn, KDistance** lj, point* p);
-Node** getnodes(char* filename, int* numnodes, int dim);
+Node** getnodes(JobS* sch, char* filename, int* numnodes, int dim);
 
 //**********List**********
 int list_size(ListNode* list);
@@ -47,6 +48,7 @@ ListNode* getpk(int pk, ListNode* list);
 Job* jobcreate (void (*job)(void*), void* args);
 JobS* initialize_scheduler(int execution_threads);
 int submit_job(JobS* sch, Job* j);
-void* start_execute(void* s);
+void* execute(void* s);
+int start_execute(JobS* sch);
 int wait_all_tasks_finish(JobS* sch);
 int destroy_scheduler(JobS* sch);

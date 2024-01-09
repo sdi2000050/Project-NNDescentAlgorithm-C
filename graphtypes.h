@@ -1,4 +1,9 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
+#define QSize 20
+#define THREADS 4
 
 typedef struct point{
     float *coord;
@@ -40,6 +45,13 @@ typedef struct kdistances {
 typedef struct jobscheduler JobS;
 typedef struct job Job;
 
+typedef struct setcoordsargs {
+    int start;
+    int end;
+    int dim;
+    FILE* file;
+    point* points;
+} STargs;
 
 typedef struct randomprojectionargs {
     Graph* graph;

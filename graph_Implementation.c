@@ -5,6 +5,30 @@
 #include <time.h>
 #include "graph.h"
 
+void getpoints(void* args){
+    STargs* st = (STargs*) args;
+    int start = st->start;
+    int end = st->end;
+    int dim = st->dim;
+    FILE* file = st->file;
+    point* points = st->points;
+
+    for (int i = start; i < end; ++i) {
+        float* values = malloc(dim * sizeof(float));
+        if (values == NULL) {
+            fprintf(stderr, "Memory allocation error\n");
+            exit(EXIT_FAILURE);
+        }
+
+        
+        if (fread(values, sizeof(float), dim, file) != dim) {         // Read the floats coords for the current point from the file
+            fprintf(stderr, "Error reading data from file\n");
+            exit(EXIT_FAILURE);
+        }
+
+        setcoords(&points[i],values,dim);
+    }
+}
 
 void setcoords(point *p, float* coords, int dimention) {
     p->dim = dimention;
@@ -70,7 +94,7 @@ Graph* createGraph(int numnodes) {
 }
 
 
-Node** getnodes(char* filename, int* numnodes, int dim) {
+Node** getnodes(JobS* sch, char* filename, int* numnodes, int dim) {
     FILE *file = fopen(filename, "rb");                                 // Open the file in binary mode
     if (file == NULL) {
         fprintf(stderr, "Error opening file: %s\n", filename);
@@ -90,21 +114,20 @@ Node** getnodes(char* filename, int* numnodes, int dim) {
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < num_points; ++i) {
-        float* values = malloc(dim * sizeof(float));
-        if (values == NULL) {
-            fprintf(stderr, "Memory allocation error\n");
-            exit(EXIT_FAILURE);
-        }
+    for (int i=0; i<THREADS; i++){
+        STargs* st = (STargs*) malloc (sizeof(STargs));
+        st->start = i * (num_points/THREADS);
+        st->end = (i+1) * (num_points/THREADS);
+        st->dim = dim;
+        st->file = file;
+        st->points = points;
 
-        
-        if (fread(values, sizeof(float), dim, file) != dim) {         // Read the floats coords for the current point from the file
-            fprintf(stderr, "Error reading data from file\n");
-            exit(EXIT_FAILURE);
-        }
-
-        setcoords(&points[i],values,dim);
+        Job* j = jobcreate(getpoints,(void*)st);
+        submit_job(sch,j);
     }
+
+    wait_all_tasks_finish(sch);
+    printf("all tasks dot p finished\n");
 
     Node** nodes = (Node**)malloc(num_points * sizeof(Node*));
     if (nodes == NULL) {
