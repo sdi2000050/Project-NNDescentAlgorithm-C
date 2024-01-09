@@ -130,7 +130,6 @@ Node** getnodes(JobS* sch, char* filename, int* numnodes, int dim) {
     }
 
     wait_all_tasks_finish(sch);
-    printf("all tasks dot p finished\n");
 
     Node** nodes = (Node**)malloc(num_points * sizeof(Node*));
     if (nodes == NULL) {
