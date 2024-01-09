@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     start_execute(sch);
 
     Node** nodes = getnodes(sch,input_file,&numnodes,dim);      // Get the nodes from the file
-    
+
     Graph* graph = createGraph(numnodes);
 
     for(int i=0; i<(THREADS*2); i++){
@@ -72,10 +72,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
     wait_all_tasks_finish(sch);
 
-    printf("all tasks rp finished\n");
+    destroy_scheduler(sch);
 
     create_pt_graph(graph, nodes, k);
 
@@ -167,8 +166,6 @@ int main(int argc, char *argv[]) {
         
         printNeighbors(graph);
     }
-
-    destroy_scheduler(sch);
 
     for(int i=0; i<numnodes; i++){
         free(nodes[i]->ljarray);

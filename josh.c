@@ -141,7 +141,7 @@ void* execute(void* s){
 
 int wait_all_tasks_finish(JobS* sch) {
     pthread_mutex_lock(&sch->mutex);
-    
+
     while (sch->q->size != 0 && !sch->destroy){
         pthread_cond_wait(&sch->condv,&sch->mutex);
     }

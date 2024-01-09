@@ -118,6 +118,9 @@ Node** getnodes(JobS* sch, char* filename, int* numnodes, int dim) {
         STargs* st = (STargs*) malloc (sizeof(STargs));
         st->start = i * (num_points/THREADS);
         st->end = (i+1) * (num_points/THREADS);
+        if (i==THREADS-1){
+            st->end = num_points;
+        }
         st->dim = dim;
         st->file = file;
         st->points = points;
@@ -396,17 +399,8 @@ void printNeighbors(Graph* graph) {
             kneighborNode = kneighborNode->nextnode;
         }
         printf("\n");
-    
-        printf("Node %d rneighbors: ", currentNode->numnode);
-        ListNode* rneighborNode = currentNode->rneighbors;
-        while (rneighborNode != NULL) {
-            printf("%d ", rneighborNode->node->numnode);
-            rneighborNode = rneighborNode->nextnode;
-        }
-        printf("\n");
 
         free(kneighborNode);
-        free(rneighborNode);
     }
 }
 
