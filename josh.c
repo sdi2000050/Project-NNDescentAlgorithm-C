@@ -90,10 +90,11 @@ int submit_job(JobS* sch, Job* j) {
     }
 
     sch->q->size++;
-    pthread_mutex_unlock(&sch->mutex);
 
     pthread_cond_signal(&sch->condv);
-    
+
+    pthread_mutex_unlock(&sch->mutex);
+
     return 0;
 }
 
@@ -129,10 +130,11 @@ void* execute(void* s){
             sch->q->firstjob = current_job->nextjob;
             free(current_job);
             sch->q->size--;
-        }        
-        pthread_mutex_unlock(&sch->mutex);
-
+        }         
+        
         pthread_cond_signal(&sch->condv);
+
+        pthread_mutex_unlock(&sch->mutex);
 
     }
 
@@ -142,7 +144,7 @@ void* execute(void* s){
 int wait_all_tasks_finish(JobS* sch) {
     pthread_mutex_lock(&sch->mutex);
 
-    while (sch->q->size != 0 && !sch->destroy){
+    while (sch->q->size != 0){
         pthread_cond_wait(&sch->condv,&sch->mutex);
     }
 

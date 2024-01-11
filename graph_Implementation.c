@@ -131,6 +131,7 @@ Node** getnodes(JobS* sch, char* filename, int* numnodes, int dim) {
 
     wait_all_tasks_finish(sch);
 
+
     Node** nodes = (Node**)malloc(num_points * sizeof(Node*));
     if (nodes == NULL) {
         fprintf(stderr, "Memory allocation error\n");
@@ -213,10 +214,10 @@ void randomprojection(void* args) {
     }
     int i,p1,j,p2;
     while( size > D ) {
-        i = rand() % (size+1);
+        i = rand() % size;
         p1 = subset[i];
 
-        j = rand() % (size+1); 
+        j = rand() % size; 
         p2 = subset[j];
 
         while ( i==j ) {

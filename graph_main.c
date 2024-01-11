@@ -46,6 +46,8 @@ int main(int argc, char *argv[]) {
 
     Node** nodes = getnodes(sch,input_file,&numnodes,dim);      // Get the nodes from the file
 
+    //destroy_scheduler(sch);
+
     Graph* graph = createGraph(numnodes);
 
     for(int i=0; i<(THREADS*2); i++){
